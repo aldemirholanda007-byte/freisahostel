@@ -1,0 +1,13 @@
+import { useState } from "react";
+
+function Calendar() {
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  return (
+    <div className="calendar-modal">
+      <h3>Calendário</h3>
+    </div>
+  );
+}
+
+export default Calendar;
