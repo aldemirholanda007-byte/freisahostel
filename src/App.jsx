@@ -1,3 +1,4 @@
+```name=google-sheets-integration.js
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { ChevronLeft, ChevronRight, X, Loader } from 'lucide-react';
 
@@ -665,7 +666,7 @@ const CalendarModal = ({ onClose, onSelectDate, sheetsData, roomId, selectedDate
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content calendar-modal" onClick={e => e.stopPropagation()}>
+      <div className="modal-content calendar-modal" onClick={e => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="Calendário de seleção de datas">
         <div className="calendar-header">
           <button onClick={prevMonth} aria-label="Mês anterior">
             <img src={PREV_IMG} alt="Anterior" className="calendar-icon" />
@@ -681,40 +682,45 @@ const CalendarModal = ({ onClose, onSelectDate, sheetsData, roomId, selectedDate
           </div>
         </div>
 
-        <div className="calendar-grid">
-          {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map(day => (
-            <div key={day} className="calendar-day-name">{day}</div>
-          ))}
-          {days.map((day, idx) => {
-            if (!day) {
-              return <div key={idx} className="calendar-day empty" />;
-            }
+        {/* calendar-body: mantém o header fixo e faz o grid rolar se necessário */}
+        <div className="calendar-body">
+          <div className="calendar-grid" role="grid" aria-label="Calendário">
+            {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map(day => (
+              <div key={day} className="calendar-day-name" role="columnheader">{day}</div>
+            ))}
+            {days.map((day, idx) => {
+              if (!day) {
+                return <div key={idx} className="calendar-day empty" />;
+              }
 
-            const year = currentDate.getFullYear();
-            const month = currentDate.getMonth();
-            const date = createLocalDate(year, month, day);
-            date.setHours(0,0,0,0);
-            const dateStr = formatDateToYYYYMMDD(year, month, day);
+              const year = currentDate.getFullYear();
+              const month = currentDate.getMonth();
+              const date = createLocalDate(year, month, day);
+              date.setHours(0,0,0,0);
+              const dateStr = formatDateToYYYYMMDD(year, month, day);
 
-            const reserved = isReserved(day);
-            const todayLocal = new Date();
-            todayLocal.setHours(0,0,0,0);
-            const isPast = date.getTime() < todayLocal.getTime();
-            const isToday = date.getTime() === todayLocal.getTime();
-            const isSelected = selectedDate && dateStr === selectedDate;
+              const reserved = isReserved(day);
+              const todayLocal = new Date();
+              todayLocal.setHours(0,0,0,0);
+              const isPast = date.getTime() < todayLocal.getTime();
+              const isToday = date.getTime() === todayLocal.getTime();
+              const isSelected = selectedDate && dateStr === selectedDate;
 
-            return (
-              <button
-                key={idx}
-                className={`calendar-day ${reserved ? 'reserved' : 'available'} ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''} ${isPast ? 'past' : ''}`}
-                onClick={() => handleDateClick(day)}
-                disabled={reserved || isPast}
-              >
-                <div className="day-number">{day}</div>
-                <div className="day-price">{formatCurrency(getPrice(day))}</div>
-              </button>
-            );
-          })}
+              return (
+                <button
+                  key={idx}
+                  className={`calendar-day ${reserved ? 'reserved' : 'available'} ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''} ${isPast ? 'past' : ''}`}
+                  onClick={() => handleDateClick(day)}
+                  disabled={reserved || isPast}
+                  role="gridcell"
+                  aria-disabled={reserved || isPast}
+                >
+                  <div className="day-number">{day}</div>
+                  <div className="day-price">{formatCurrency(getPrice(day))}</div>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
@@ -1134,6 +1140,17 @@ export default function App() {
   const [showModal, setShowModal] = useState(null);
   const { data: sheetsData, isLoading, error } = useSheetsData();
 
+  // FIX: Forçar idioma do site para pt-BR permanentemente
+  useEffect(() => {
+    try {
+      document.documentElement.lang = 'pt-BR';
+      document.documentElement.setAttribute('lang', 'pt-BR');
+      document.documentElement.setAttribute('data-locale', 'pt-BR');
+    } catch (e) {
+      // ignore in non-browser environments
+    }
+  }, []);
+
   const roomsData = [
     {
       name: 'Quarto Feminino FreiSa',
@@ -1275,7 +1292,7 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
   }
 
   return (
-    <div className="app">
+    <div className="app" lang="pt-BR">
       <style>{`
         * {
           margin: 0;
@@ -1901,6 +1918,9 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           align-items: center;
           z-index: 1000;
           padding: 20px;
+          /* respect safe area on mobile */
+          padding-top: calc(env(safe-area-inset-top, 20px) + 12px);
+          padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 12px);
         }
 
         .modal-content {
@@ -1929,25 +1949,39 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
         }
 
         /* ================= CALENDAR MODAL ================= */
+        /* Make calendar modal layout flexible and fully responsive.
+           The header stays visible while the grid scrolls when needed.
+           Remove aspect-ratio on days so they can wrap and stay fully visible. */
 
         .calendar-modal {
           max-width: 600px;
+          width: 100%;
+          /* Use full available height but keep some margin from edges */
+          height: min(90vh, 720px);
+          display: flex;
+          flex-direction: column;
+          padding: 16px;
+          box-sizing: border-box;
         }
 
-        /* HEADER */
-        /* increase right column width to make space for both arrow and close button */
+        /* Keep header sticky so user always sees month and controls */
         .calendar-header {
           display: grid;
-          grid-template-columns: 48px 1fr 120px;
+          grid-template-columns: 44px 1fr auto;
           align-items: center;
-          margin-bottom: 1.2rem;
+          margin-bottom: 12px;
           gap: 8px;
+          position: sticky;
+          top: 0;
+          z-index: 5;
+          background: #fff;
+          padding-bottom: 6px;
         }
 
         .calendar-header h3 {
           text-align: center;
           margin: 0;
-          font-size: 1.2rem;
+          font-size: 1.1rem;
           font-weight: 600;
         }
 
@@ -1986,19 +2020,15 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           height: 20px;
         }
 
-        /* BOTÕES DAS SETAS */
         .calendar-header button {
           width: 40px;
           height: 40px;
-
           display: flex;
           align-items: center;
           justify-content: center;
-
           background: #f3f3f3;
           border: none;
           border-radius: 10px;
-
           cursor: pointer;
           transition: background 0.2s ease, transform 0.15s ease;
         }
@@ -2012,38 +2042,43 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           transform: scale(0.95);
         }
 
-        /* GRID */
+        /* calendar-body is scrollable portion */
+        .calendar-body {
+          flex: 1;
+          overflow: auto;
+          padding-right: 6px; /* for comfortable scroll */
+        }
+
         .calendar-grid {
           display: grid;
           grid-template-columns: repeat(7, 1fr);
           gap: 6px;
+          align-items: stretch;
         }
 
-        /* NOMES DOS DIAS */
+        /* Day names */
         .calendar-day-name {
           text-align: center;
           font-weight: 600;
-          padding: 8px 0;
+          padding: 8px 4px;
           color: #666;
+          font-size: 0.85rem;
         }
 
-        /* DIAS */
+        /* Day cells now adapt their height (no fixed aspect-ratio) so on narrow screens they do not overlap */
         .calendar-day {
-          aspect-ratio: 1;
-          min-height: 64px;
-
+          min-height: 56px;
+          padding: 8px;
           border: 1.5px solid #e0e0e0;
           border-radius: 10px;
-
           display: flex;
           flex-direction: column;
           justify-content: center;
           align-items: center;
-
           background: #fff;
           cursor: pointer;
-
-          transition: all 0.25s ease;
+          transition: all 0.18s ease;
+          word-break: break-word;
         }
 
         .calendar-day.empty {
@@ -2054,7 +2089,7 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
 
         .calendar-day.available:hover {
           background: #e8f5e9;
-          transform: scale(1.05);
+          transform: scale(1.02);
         }
 
         .calendar-day.reserved {
@@ -2066,7 +2101,7 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
         .calendar-day.selected {
           background: #27ae60;
           color: #fff;
-          box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.3);
+          box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.18);
         }
 
         .calendar-day.today {
@@ -2074,35 +2109,49 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
         }
 
         .calendar-day.past {
-          opacity: 0.4;
+          opacity: 0.45;
           cursor: not-allowed;
         }
 
         .day-number {
-          font-size: 0.85rem;
+          font-size: 0.95rem;
           font-weight: 700;
         }
 
         .day-price {
-          font-size: 0.7rem;
+          font-size: 0.75rem;
+          margin-top: 4px;
+        }
+
+        /* Ensure clickable area doesn’t get covered by the modal controls on mobile */
+        .modal-content.calendar-modal .calendar-header {
+          margin-top: 0;
         }
 
         /* RESPONSIVO */
         @media (max-width: 768px) {
           .calendar-modal {
-            max-width: 95%;
+            max-width: 100%;
+            height: calc(100vh - 32px);
+            padding: 12px;
+            border-radius: 12px;
+          }
+
+          .calendar-header {
+            grid-template-columns: 36px 1fr auto;
           }
 
           .calendar-day {
-            min-height: 56px;
+            min-height: 48px;
+            padding: 6px;
           }
 
           .day-number {
-            font-size: 0.8rem;
+            font-size: 0.9rem;
           }
 
           .day-price {
-            font-size: 0.65rem;
+            font-size: 0.7rem;
           }
         }
 
@@ -2417,3 +2466,4 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
     </div>
   );
 }
+```
