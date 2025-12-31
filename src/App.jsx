@@ -1,5 +1,4 @@
-```name=google-sheets-integration.js
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { ChevronLeft, ChevronRight, X, Loader } from 'lucide-react';
 
 // ==================== CONFIGURAÇÃO ====================
@@ -580,11 +579,55 @@ const TestimonialsSection = () => {
 };
 
 // Calendar Modal (integrado com Sheets)
-// NOTE: uses image icons for prev/next/close (kept from previous change)
+// NOTE: Fullscreen behavior on mobile is implemented to guarantee all dates visible
 const CalendarModal = ({ onClose, onSelectDate, sheetsData, roomId, selectedDate }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+
+  const modalRef = useRef(null);
+  const headerRef = useRef(null);
+
+  // fullscreen on small screens
+  const [isFullscreen, setIsFullscreen] = useState(typeof window !== 'undefined' ? window.innerWidth <= 768 : false);
+
+  useEffect(() => {
+    const onResize = () => {
+      setIsFullscreen(window.innerWidth <= 768);
+    };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  // when modal opens in fullscreen, prevent background scroll and ensure it's top-most
+  useEffect(() => {
+    if (isFullscreen) {
+      // hide background scroll
+      const prevOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      // also try to prevent overscroll on iOS
+      document.documentElement.style.overscrollBehavior = 'none';
+
+      return () => {
+        document.body.style.overflow = prevOverflow || '';
+        document.documentElement.style.overscrollBehavior = '';
+      };
+    }
+    return;
+  }, [isFullscreen]);
+
+  // set css variable with header height so grid row calc can use it
+  useEffect(() => {
+    const setHeaderHeight = () => {
+      if (!modalRef.current || !headerRef.current) return;
+      const headerHeight = headerRef.current.getBoundingClientRect().height;
+      // add some buffer
+      modalRef.current.style.setProperty('--calendar-header-height', `${Math.ceil(headerHeight)}px`);
+    };
+    setHeaderHeight();
+    window.addEventListener('resize', setHeaderHeight);
+    return () => window.removeEventListener('resize', setHeaderHeight);
+  }, [currentDate]);
 
   const createLocalDate = (year, month0Based, day) => {
     return new Date(year, month0Based, day);
@@ -666,8 +709,16 @@ const CalendarModal = ({ onClose, onSelectDate, sheetsData, roomId, selectedDate
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content calendar-modal" onClick={e => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="Calendário de seleção de datas">
-        <div className="calendar-header">
+      <div
+        ref={modalRef}
+        className={`modal-content calendar-modal ${isFullscreen ? 'fullscreen' : ''}`}
+        onClick={e => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Calendário de seleção de datas"
+        translate="no" // prevent browser translation on this component
+      >
+        <div className="calendar-header" ref={headerRef}>
           <button onClick={prevMonth} aria-label="Mês anterior">
             <img src={PREV_IMG} alt="Anterior" className="calendar-icon" />
           </button>
@@ -682,7 +733,7 @@ const CalendarModal = ({ onClose, onSelectDate, sheetsData, roomId, selectedDate
           </div>
         </div>
 
-        {/* calendar-body: mantém o header fixo e faz o grid rolar se necessário */}
+        {/* calendar-body: for fullscreen on mobile we calculate day heights so all rows fit in viewport */}
         <div className="calendar-body">
           <div className="calendar-grid" role="grid" aria-label="Calendário">
             {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map(day => (
@@ -1140,12 +1191,45 @@ export default function App() {
   const [showModal, setShowModal] = useState(null);
   const { data: sheetsData, isLoading, error } = useSheetsData();
 
-  // FIX: Forçar idioma do site para pt-BR permanentemente
+  // FIX: Forçar idioma do site para pt-BR permanentemente e bloquear tradução automática do navegador
   useEffect(() => {
     try {
-      document.documentElement.lang = 'pt-BR';
-      document.documentElement.setAttribute('lang', 'pt-BR');
-      document.documentElement.setAttribute('data-locale', 'pt-BR');
+      // Set html lang and prevent translation attributes
+      const html = document.documentElement;
+      html.lang = 'pt-BR';
+      html.setAttribute('lang', 'pt-BR');
+      html.setAttribute('translate', 'no');
+      html.classList.add('notranslate');
+
+      // Also set on body
+      document.body.setAttribute('translate', 'no');
+      document.body.classList.add('notranslate');
+
+      // Inject meta tags to block translation (Google Chrome/Google Translate)
+      const head = document.head || document.getElementsByTagName('head')[0];
+
+      const ensureMeta = (name, content, attrName = 'name') => {
+        const selector = `${attrName}="${name}"`;
+        let meta = head.querySelector(`meta[${selector}]`);
+        if (!meta) {
+          meta = document.createElement('meta');
+          meta.setAttribute(attrName, name);
+          meta.setAttribute('content', content);
+          head.appendChild(meta);
+        } else {
+          meta.setAttribute('content', content);
+        }
+      };
+
+      // Google's directive to avoid translation
+      ensureMeta('google', 'notranslate');
+      // Indicate content language explicitly
+      ensureMeta('Content-Language', 'pt-BR', 'http-equiv');
+      // Some browsers may respect this
+      ensureMeta('locale', 'pt-BR');
+
+      // Add a small data attribute on html for other scripts to check locale
+      html.setAttribute('data-locale', 'pt-BR');
     } catch (e) {
       // ignore in non-browser environments
     }
@@ -1950,18 +2034,37 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
 
         /* ================= CALENDAR MODAL ================= */
         /* Make calendar modal layout flexible and fully responsive.
-           The header stays visible while the grid scrolls when needed.
-           Remove aspect-ratio on days so they can wrap and stay fully visible. */
+           The header stays visible while the grid is sized so all rows fit inside viewport on mobile. */
 
         .calendar-modal {
           max-width: 600px;
           width: 100%;
-          /* Use full available height but keep some margin from edges */
+          /* Use a flexible height; when fullscreen class is applied it will occupy full viewport */
           height: min(90vh, 720px);
           display: flex;
           flex-direction: column;
           padding: 16px;
           box-sizing: border-box;
+        }
+
+        /* Fullscreen mode for mobile: occupies entire viewport so no element overlaps calendar */
+        .calendar-modal.fullscreen {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          max-width: 100vw;
+          max-height: 100vh;
+          margin: 0;
+          border-radius: 0;
+          padding: calc(env(safe-area-inset-top, 12px) + 12px) 12px calc(env(safe-area-inset-bottom, 12px) + 12px) 12px;
+          z-index: 99999;
+          box-shadow: none;
+          display: flex;
+          flex-direction: column;
+          background: #fff;
+          overflow: hidden; /* Prevent internal scrolling; grid will be sized to fit */
         }
 
         /* Keep header sticky so user always sees month and controls */
@@ -2042,11 +2145,11 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           transform: scale(0.95);
         }
 
-        /* calendar-body is scrollable portion */
+        /* calendar-body is normally scrollable on desktop, but on mobile fullscreen we fit the grid into viewport */
         .calendar-body {
           flex: 1;
           overflow: auto;
-          padding-right: 6px; /* for comfortable scroll */
+          padding-right: 6px; /* for comfortable scroll on desktop */
         }
 
         .calendar-grid {
@@ -2065,7 +2168,7 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           font-size: 0.85rem;
         }
 
-        /* Day cells now adapt their height (no fixed aspect-ratio) so on narrow screens they do not overlap */
+        /* Day cells adapt their height so on narrow screens they do not overlap. On mobile (fullscreen) we calculate a row height so all rows fit in viewport */
         .calendar-day {
           min-height: 56px;
           padding: 8px;
@@ -2123,12 +2226,30 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           margin-top: 4px;
         }
 
-        /* Ensure clickable area doesn’t get covered by the modal controls on mobile */
-        .modal-content.calendar-modal .calendar-header {
-          margin-top: 0;
+        /* Desktop/tablet: allow calendar body to scroll if necessary */
+        @media (min-width: 769px) {
+          .calendar-body {
+            overflow: auto;
+            max-height: calc(90vh - var(--calendar-header-height, 72px) - 32px);
+          }
         }
 
-        /* RESPONSIVO */
+        /* Mobile fullscreen behavior: compute grid row height so all possible 6 rows fit into the available space without scroll.
+           We rely on --calendar-header-height (set dynamically) to compute available height. */
+        .calendar-modal.fullscreen .calendar-body {
+          overflow: hidden; /* we size grid to fit */
+          height: calc(100vh - var(--calendar-header-height, 72px) - 24px); /* small padding buffer */
+        }
+
+        /* If month requires up to 6 rows, divide body height equally among rows (including day names row) */
+        .calendar-modal.fullscreen .calendar-grid {
+          /* first row is day names, then up to 6 rows of days -> we compute row height for days only.
+             Use grid-auto-rows to size day cells dynamically. Here we subtract the height consumed by day-name row (approx 32px)
+             and split remaining height across 6 rows. */
+          grid-auto-rows: calc((100vh - var(--calendar-header-height, 72px) - 32px) / 6);
+        }
+
+        /* Responsivo */
         @media (max-width: 768px) {
           .calendar-modal {
             max-width: 100%;
@@ -2142,7 +2263,7 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           }
 
           .calendar-day {
-            min-height: 48px;
+            min-height: 44px;
             padding: 6px;
           }
 
@@ -2466,4 +2587,3 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
     </div>
   );
 }
-```
