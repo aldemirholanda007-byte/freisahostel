@@ -18,7 +18,7 @@ ${le?`🏠`:`🛏️`} ${le?`Suítes`:`Camas`} escolhidas: ${n}
 💰 Resumo de valores:
 - Valor base: ${w(ue)}`;m&&(i+=`\n- Check-in antecipado: ${w(T(`early_checkin`))}`),g&&(i+=`\n- Check-out estendido: ${w(T(`late_checkout`))}`),v&&(i+=`\n- Transfer ida: ${w(T(`transfer_arrival`))}`),b&&(i+=`\n- Transfer volta: ${w(T(`transfer_departure`))}`),i+=`\n\n💵 Total: ${w(E())}
 
-Obrigado!`;let o=`https://wa.me/5521997305179?text=${encodeURIComponent(i)}`;window.open(o,`_blank`)};return(0,S.jsxs)(S.Fragment,{children:[(0,S.jsxs)(`div`,{className:`reservation-card`,children:[(0,S.jsx)(`h3`,{children:e}),(0,S.jsx)(`p`,{className:`card-subtitle`,children:`Verificar disponibilidade`}),(0,S.jsxs)(`div`,{className:`form-group`,children:[(0,S.jsx)(`label`,{children:`Check-in`}),(0,S.jsx)(`input`,{type:`text`,value:r?ie(r):``,readOnly:!0,onClick:()=>C(`checkin`),placeholder:`Selecione a data`})]}),(0,S.jsxs)(`div`,{className:`form-group`,children:[(0,S.jsx)(`label`,{children:`Check-out`}),(0,S.jsx)(`input`,{type:`text`,value:a?ie(a):``,readOnly:!0,onClick:()=>C(`checkout`),placeholder:`Selecione a data`})]}),(0,S.jsx)(`div`,{className:`checkin-times`,children:(0,S.jsx)(`span`,{children:`Check-in às 14:00 • Check-out até 12:00`})}),(0,S.jsxs)(`div`,{className:`form-group`,children:[(0,S.jsx)(`label`,{children:`Hóspedes`}),(0,S.jsx)(`select`,{value:s,onChange:e=>c(Number(e.target.value)),children:[...Array(14)].map((e,t)=>(0,S.jsx)(`option`,{value:t+1,children:t+1},t+1))})]}),(0,S.jsxs)(`button`,{className:`btn-select`,onClick:()=>le?oe(!0):re(!0),children:[le?`Selecionar suítes`:`Selecionar camas`,(le?f:u).length>0&&` (${(le?f:u).length})`]}),(0,S.jsxs)(`div`,{className:`extras-section`,children:[(0,S.jsx)(`h4`,{children:`Opções extras`}),(0,S.jsxs)(`label`,{className:`checkbox-label`,children:[(0,S.jsx)(`input`,{type:`checkbox`,checked:m,onChange:e=>h(e.target.checked)}),(0,S.jsxs)(`span`,{children:[`Check-in antecipado (+`,w(T(`early_checkin`)),`)`]})]}),(0,S.jsxs)(`label`,{className:`checkbox-label`,children:[(0,S.jsx)(`input`,{type:`checkbox`,checked:g,onChange:e=>_(e.target.checked)}),(0,S.jsxs)(`span`,{children:[`Check-out estendido (+`,w(T(`late_checkout`)),`)`]})]})]}),(0,S.jsxs)(`div`,{className:`transfer-section`,children:[(0,S.jsx)(`h4`,{children:`Transfer`}),(0,S.jsxs)(`button`,{className:`transfer-btn ${v?`active`:``}`,onClick:()=>y(!v),children:[`Transfer ida ao hostel (`,w(T(`transfer_arrival`)),`)`]}),(0,S.jsxs)(`button`,{className:`transfer-btn ${b?`active`:``}`,onClick:()=>x(!b),children:[`Transfer volta para aeroporto (`,w(T(`transfer_departure`)),`)`]})]}),(0,S.jsxs)(`div`,{className:`price-summary`,children:[(0,S.jsx)(`h4`,{children:`Resumo`}),(0,S.jsxs)(`div`,{className:`price-line`,children:[(0,S.jsx)(`span`,{children:`Hospedagem`}),(0,S.jsx)(`span`,{children:w(ue)})]}),(m||g||v||b)&&(0,S.jsxs)(`div`,{className:`price-line`,children:[(0,S.jsx)(`span`,{children:`Extras`}),(0,S.jsx)(`span`,{children:w((m?T(`early_checkin`):0)+(g?T(`late_checkout`):0)+(v?T(`transfer_arrival`):0)+(b?T(`transfer_departure`):0))})]}),(0,S.jsxs)(`div`,{className:`price-line total`,children:[(0,S.jsx)(`span`,{children:`Total`}),(0,S.jsx)(`span`,{children:w(E())})]})]}),se&&(0,S.jsx)(`p`,{className:`error-message`,children:se}),(0,S.jsx)(`button`,{className:`btn-primary btn-reserve`,onClick:pe,disabled:!fe(),children:`Conferir disponibilidade`}),(0,S.jsx)(`p`,{className:`whatsapp-note`,children:`Você será redirecionado para o WhatsApp`})]}),ee&&(0,S.jsx)(ge,{onClose:()=>C(null),onSelectDate:e=>{ee===`checkin`?i(e):o(e),C(null)},sheetsData:n,roomId:t,selectedDate:ee===`checkin`?r:a}),te&&(0,S.jsx)(_e,{onClose:()=>re(!1),onConfirm:d,maxBeds:s,selectedBeds:u,sheetsData:n,roomId:t,checkin:r,checkout:a}),ae&&(0,S.jsx)(ve,{onClose:()=>oe(!1),onConfirm:p,selectedSuites:f,sheetsData:n,checkin:r,checkout:a})]})};function be(){let[e,t]=(0,l.useState)(null),{data:n,isLoading:r,error:i}=ue();(0,l.useEffect)(()=>{try{let e=document.documentElement;e.lang=`pt-BR`,e.setAttribute(`lang`,`pt-BR`),e.setAttribute(`translate`,`no`),e.classList.add(`notranslate`),document.body.setAttribute(`translate`,`no`),document.body.classList.add(`notranslate`);let t=document.head||document.getElementsByTagName(`head`)[0],n=(e,n,r)=>{let i;i=e===`name`?`meta[name="${n}"]`:e===`http-equiv`?`meta[http-equiv="${n}"]`:`meta[${e}="${n}"]`;let a=t.querySelector(i);a?a.setAttribute(`content`,r):(a=document.createElement(`meta`),e===`name`?a.setAttribute(`name`,n):e===`http-equiv`?a.setAttribute(`http-equiv`,n):a.setAttribute(e,n),a.setAttribute(`content`,r),t.appendChild(a))};n(`name`,`google`,`notranslate`),n(`http-equiv`,`Content-Language`,`pt-BR`),n(`name`,`locale`,`pt-BR`)}catch{}},[]);let a=[{name:`Quarto Feminino FreiSa`,location:`Quarto em Rio de Janeiro, Brasil`,beds:14,bathrooms:`4 banheiros compartilhados`,images:[`https://i.imgur.com/5RmzKKS.jpeg`,`https://i.imgur.com/32uJWkj.jpeg`,`https://i.imgur.com/Pyt9BLd.jpeg`,`https://i.imgur.com/QoRrocG.jpeg`],description:`Quarto exclusivo feminino com ambiente acolhedor e seguro. Perfeito para quem busca conforto e privacidade em Copacabana.`,fullDescription:`Quarto exclusivo feminino com ambiente acolhedor e seguro. Perfeito para quem busca conforto e privacidade em Copacabana. Com 14 camas e 4 banheiros compartilhados, garantimos mais comodidade para nossas hóspedes. O espaço foi pensado para criar um ambiente de sororidade e respeito, onde mulheres viajantes podem se sentir em casa.`,highlights:[{icon:`🚿`,title:`Banheiro compartilhado`,text:`Banheiro de uso coletivo, sempre limpo e organizado.`},{icon:`🛋️`,title:`Áreas compartilhadas`,text:`Espaços compartilhados para convivência.`},{icon:`🛏️`,title:`Quarto compartilhado`,text:`Dormitórios coletivos e confortáveis.`}],hasCarousel:!0},{name:`Quarto Misto`,location:`Quarto em Rio de Janeiro, Brasil`,beds:14,bathrooms:`Banheiros compartilhados`,images:[`https://i.imgur.com/OddkKoI.jpeg`],description:`🏡 Sobre este espaço: Simplicidade, conforto e localização estratégica definem esta hospedagem pensada para quem quer relaxar e aproveitar a cidade com tranquilidade. Um espaço acolhedor, funcional e bem equipado para você se sentir em casa desde o primeiro momento.`,fullDescription:`Quarto Misto — Detalhes
+Obrigado!`;let o=`https://wa.me/5521997305179?text=${encodeURIComponent(i)}`;window.open(o,`_blank`)};return(0,S.jsxs)(S.Fragment,{children:[(0,S.jsxs)(`div`,{className:`reservation-card`,children:[(0,S.jsx)(`h3`,{children:e}),(0,S.jsx)(`p`,{className:`card-subtitle`,children:`Verificar disponibilidade`}),(0,S.jsxs)(`div`,{className:`form-group`,children:[(0,S.jsx)(`label`,{children:`Check-in`}),(0,S.jsx)(`input`,{type:`text`,value:r?ie(r):``,readOnly:!0,onClick:()=>C(`checkin`),placeholder:`Selecione a data`})]}),(0,S.jsxs)(`div`,{className:`form-group`,children:[(0,S.jsx)(`label`,{children:`Check-out`}),(0,S.jsx)(`input`,{type:`text`,value:a?ie(a):``,readOnly:!0,onClick:()=>C(`checkout`),placeholder:`Selecione a data`})]}),(0,S.jsx)(`div`,{className:`checkin-times`,children:(0,S.jsx)(`span`,{children:`Check-in às 14:00 • Check-out até 12:00`})}),(0,S.jsxs)(`div`,{className:`form-group`,children:[(0,S.jsx)(`label`,{children:`Hóspedes`}),(0,S.jsx)(`select`,{value:s,onChange:e=>c(Number(e.target.value)),children:[...Array(14)].map((e,t)=>(0,S.jsx)(`option`,{value:t+1,children:t+1},t+1))})]}),(0,S.jsxs)(`button`,{className:`btn-select`,onClick:()=>le?oe(!0):re(!0),children:[le?`Selecionar suítes`:`Selecionar camas`,(le?f:u).length>0&&` (${(le?f:u).length})`]}),(0,S.jsxs)(`div`,{className:`extras-section`,children:[(0,S.jsx)(`h4`,{children:`Opções extras`}),(0,S.jsxs)(`label`,{className:`checkbox-label`,children:[(0,S.jsx)(`input`,{type:`checkbox`,checked:m,onChange:e=>h(e.target.checked)}),(0,S.jsxs)(`span`,{children:[`Check-in antecipado (+`,w(T(`early_checkin`)),`)`]})]}),(0,S.jsxs)(`label`,{className:`checkbox-label`,children:[(0,S.jsx)(`input`,{type:`checkbox`,checked:g,onChange:e=>_(e.target.checked)}),(0,S.jsxs)(`span`,{children:[`Check-out estendido (+`,w(T(`late_checkout`)),`)`]})]})]}),(0,S.jsxs)(`div`,{className:`transfer-section`,children:[(0,S.jsx)(`h4`,{children:`Transfer`}),(0,S.jsxs)(`button`,{className:`transfer-btn ${v?`active`:``}`,onClick:()=>y(!v),children:[`Transfer ida ao hostel (`,w(T(`transfer_arrival`)),`)`]}),(0,S.jsxs)(`button`,{className:`transfer-btn ${b?`active`:``}`,onClick:()=>x(!b),children:[`Transfer volta para aeroporto (`,w(T(`transfer_departure`)),`)`]})]}),(0,S.jsxs)(`div`,{className:`price-summary`,children:[(0,S.jsx)(`h4`,{children:`Resumo`}),(0,S.jsxs)(`div`,{className:`price-line`,children:[(0,S.jsx)(`span`,{children:`Hospedagem`}),(0,S.jsx)(`span`,{children:w(ue)})]}),(m||g||v||b)&&(0,S.jsxs)(`div`,{className:`price-line`,children:[(0,S.jsx)(`span`,{children:`Extras`}),(0,S.jsx)(`span`,{children:w((m?T(`early_checkin`):0)+(g?T(`late_checkout`):0)+(v?T(`transfer_arrival`):0)+(b?T(`transfer_departure`):0))})]}),(0,S.jsxs)(`div`,{className:`price-line total`,children:[(0,S.jsx)(`span`,{children:`Total`}),(0,S.jsx)(`span`,{children:w(E())})]})]}),se&&(0,S.jsx)(`p`,{className:`error-message`,children:se}),(0,S.jsx)(`button`,{className:`btn-primary btn-reserve`,onClick:pe,disabled:!fe(),children:`Conferir disponibilidade`}),(0,S.jsx)(`p`,{className:`whatsapp-note`,children:`Você será redirecionado para o WhatsApp`})]}),ee&&(0,S.jsx)(ge,{onClose:()=>C(null),onSelectDate:e=>{ee===`checkin`?i(e):o(e),C(null)},sheetsData:n,roomId:t,selectedDate:ee===`checkin`?r:a}),te&&(0,S.jsx)(_e,{onClose:()=>re(!1),onConfirm:d,maxBeds:s,selectedBeds:u,sheetsData:n,roomId:t,checkin:r,checkout:a}),ae&&(0,S.jsx)(ve,{onClose:()=>oe(!1),onConfirm:p,selectedSuites:f,sheetsData:n,checkin:r,checkout:a})]})};function be(){let[e,t]=(0,l.useState)(null),{data:n,isLoading:r,error:i}=ue();(0,l.useEffect)(()=>{try{let e=document.documentElement;e.lang=`pt-BR`,e.setAttribute(`lang`,`pt-BR`),e.setAttribute(`translate`,`no`),e.classList.add(`notranslate`),document.body.setAttribute(`translate`,`no`),document.body.classList.add(`notranslate`);let t=document.head||document.getElementsByTagName(`head`)[0],n=(e,n,r)=>{let i;i=e===`name`?`meta[name="${n}"]`:e===`http-equiv`?`meta[http-equiv="${n}"]`:`meta[${e}="${n}"]`;let a=t.querySelector(i);a?a.setAttribute(`content`,r):(a=document.createElement(`meta`),e===`name`?a.setAttribute(`name`,n):e===`http-equiv`?a.setAttribute(`http-equiv`,n):a.setAttribute(e,n),a.setAttribute(`content`,r),t.appendChild(a))};n(`name`,`google`,`notranslate`),n(`http-equiv`,`Content-Language`,`pt-BR`),n(`name`,`locale`,`pt-BR`),n(`name`,`viewport`,`width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover`),n(`name`,`apple-mobile-web-app-capable`,`yes`),n(`name`,`apple-mobile-web-app-status-bar-style`,`black-translucent`),n(`name`,`format-detection`,`telephone=no`),n(`name`,`mobile-web-app-capable`,`yes`),document.addEventListener(`gesturestart`,function(e){e.preventDefault()})}catch{}},[]);let a=[{name:`Quarto Feminino FreiSa`,location:`Quarto em Rio de Janeiro, Brasil`,beds:14,bathrooms:`4 banheiros compartilhados`,images:[`https://i.imgur.com/5RmzKKS.jpeg`,`https://i.imgur.com/32uJWkj.jpeg`,`https://i.imgur.com/Pyt9BLd.jpeg`,`https://i.imgur.com/QoRrocG.jpeg`],description:`Quarto exclusivo feminino com ambiente acolhedor e seguro. Perfeito para quem busca conforto e privacidade em Copacabana.`,fullDescription:`Quarto exclusivo feminino com ambiente acolhedor e seguro. Perfeito para quem busca conforto e privacidade em Copacabana. Com 14 camas e 4 banheiros compartilhados, garantimos mais comodidade para nossas hóspedes. O espaço foi pensado para criar um ambiente de sororidade e respeito, onde mulheres viajantes podem se sentir em casa.`,highlights:[{icon:`🚿`,title:`Banheiro compartilhado`,text:`Banheiro de uso coletivo, sempre limpo e organizado.`},{icon:`🛋️`,title:`Áreas compartilhadas`,text:`Espaços compartilhados para convivência.`},{icon:`🛏️`,title:`Quarto compartilhado`,text:`Dormitórios coletivos e confortáveis.`}],hasCarousel:!0},{name:`Quarto Misto`,location:`Quarto em Rio de Janeiro, Brasil`,beds:14,bathrooms:`Banheiros compartilhados`,images:[`https://i.imgur.com/OddkKoI.jpeg`],description:`🏡 Sobre este espaço: Simplicidade, conforto e localização estratégica definem esta hospedagem pensada para quem quer relaxar e aproveitar a cidade com tranquilidade. Um espaço acolhedor, funcional e bem equipado para você se sentir em casa desde o primeiro momento.`,fullDescription:`Quarto Misto — Detalhes
 
 Simplicidade, conforto e localização estratégica definem esta hospedagem pensada para quem quer relaxar e aproveitar a cidade com tranquilidade. Um espaço acolhedor, funcional e bem equipado para você se sentir em casa desde o primeiro momento.
 
@@ -72,15 +72,24 @@ Cozinha completa com eletrodomésticos, utensílios, louças e itens básicos pa
 🧳 Serviços adicionais
 Guarda de bagagem disponível para maior comodidade no check-in e check-out.
 
-Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalidade e boa localização.`,highlights:[{icon:`🛁`,title:`Banheiro privativo`,text:`Banheiro exclusivo em cada suíte, com água quente e itens de higiene.`},{icon:`❄️`,title:`Ar-condicionado`,text:`Climatização individual para seu conforto.`},{icon:`📺`,title:`Entretenimento`,text:`TV e Wi-Fi rápido para relaxar ou trabalhar.`}],hasCarousel:!1},{name:`Nice Place`,location:`Quarto em Rio de Janeiro, Brasil`,beds:14,bathrooms:`2 banheiros compartilhados`,images:[`https://i.imgur.com/OddkKoI.jpeg`,`https://i.imgur.com/W9koWkI.jpeg`,`https://i.imgur.com/yEaKK3Q.jpeg`,`https://i.imgur.com/HUd2mEN.jpeg`],description:`Espaço confortável e bem localizado em Copacabana. Ideal para quem quer aproveitar o melhor do Rio de Janeiro.`,fullDescription:`Espaço confortável e bem localizado em Copacabana. Ideal para quem quer aproveitar o melhor do Rio de Janeiro. Com 14 camas distribuídas em beliches e 2 banheiros compartilhados, oferecemos um ambiente social e acolhedor. A localização estratégica permite acesso rápido à praia, mercados, restaurantes e transporte público.`,highlights:[{icon:`🚿`,title:`Banheiro compartilhado`,text:`Banheiro de uso coletivo, sempre limpo e organizado.`},{icon:`🛋️`,title:`Áreas compartilhadas`,text:`Espaços compartilhados para convivência.`},{icon:`🛏️`,title:`Quarto compartilhado`,text:`Dormitórios coletivos e confortáveis.`}],hasCarousel:!0}];return r?(0,S.jsxs)(`div`,{style:{display:`flex`,justifyContent:`center`,alignItems:`center`,height:`100vh`,flexDirection:`column`,gap:`20px`},children:[(0,S.jsx)(b,{size:48,className:`spinner`}),(0,S.jsx)(`p`,{children:`Carregando dados do hostel...`})]}):(0,S.jsxs)(`div`,{className:`app`,lang:`pt-BR`,translate:`no`,children:[(0,S.jsx)(`style`,{children:`
+Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalidade e boa localização.`,highlights:[{icon:`🛁`,title:`Banheiro privativo`,text:`Banheiro exclusivo em cada suíte, com água quente e itens de higiene.`},{icon:`❄️`,title:`Ar-condicionado`,text:`Climatização individual para seu conforto.`},{icon:`📺`,title:`Entretenimento`,text:`TV e Wi-Fi rápido para relaxar ou trabalhar.`}],hasCarousel:!1},{name:`teste`,location:`Quarto em Rio de Janeiro, Brasil`,beds:14,bathrooms:`2 banheiros compartilhados`,images:[`https://i.imgur.com/OddkKoI.jpeg`,`https://i.imgur.com/W9koWkI.jpeg`,`https://i.imgur.com/yEaKK3Q.jpeg`,`https://i.imgur.com/HUd2mEN.jpeg`],description:`Espaço confortável e bem localizado em Copacabana. Ideal para quem quer aproveitar o melhor do Rio de Janeiro.`,fullDescription:`Espaço confortável e bem localizado em Copacabana. Ideal para quem quer aproveitar o melhor do Rio de Janeiro. Com 14 camas distribuídas em beliches e 2 banheiros compartilhados, oferecemos um ambiente social e acolhedor. A localização estratégica permite acesso rápido à praia, mercados, restaurantes e transporte público.`,highlights:[{icon:`🚿`,title:`Banheiro compartilhado`,text:`Banheiro de uso coletivo, sempre limpo e organizado.`},{icon:`🛋️`,title:`Áreas compartilhadas`,text:`Espaços compartilhados para convivência.`},{icon:`🛏️`,title:`Quarto compartilhado`,text:`Dormitórios coletivos e confortáveis.`}],hasCarousel:!0}];return r?(0,S.jsxs)(`div`,{style:{display:`flex`,justifyContent:`center`,alignItems:`center`,height:`100vh`,flexDirection:`column`,gap:`20px`},children:[(0,S.jsx)(b,{size:48,className:`spinner`}),(0,S.jsx)(`p`,{children:`Carregando dados do hostel...`})]}):(0,S.jsxs)(`div`,{className:`app`,lang:`pt-BR`,translate:`no`,children:[(0,S.jsx)(`style`,{children:`
         * {
           margin: 0;
           padding: 0;
           box-sizing: border-box;
         }
 
+        html {
+          height: 100%;
+          -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+          -webkit-touch-callout: none;
+        }
+
         html, body {
           height: 100%;
+          overflow-x: hidden;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
         }
 
         body {
@@ -88,10 +97,34 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           line-height: 1.6;
           color: #333;
           -webkit-text-size-adjust: 100%;
+          position: relative;
+          min-height: 100vh;
         }
 
         .app {
           overflow-x: hidden;
+          width: 100%;
+          position: relative;
+        }
+
+        /* Prevenir zoom indesejado em inputs no iOS */
+        input, select, textarea, button {
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+        }
+
+        /* Suavizar scrolling */
+        * {
+          scroll-behavior: smooth;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        /* Garantir que imagens sejam responsivas */
+        img {
+          max-width: 100%;
+          height: auto;
+          display: block;
         }
 
         .spinner {
@@ -751,29 +784,9 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
         }
         .calendar-header h3 { text-align: center; margin: 0; font-size: 1.05rem; font-weight: 600; }
 
-        /* Corpo do calendário */
-        .calendar-body { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; }
-
-        /* Grid de dias */
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; padding: 8px; }
-
         /* Dia-nome */
         .calendar-day-name { text-align: center; font-weight: 600; padding: 6px 4px; color: #666; font-size: 0.85rem; }
-
-        /* Células de dia (sem aspect-ratio; usamos min-height e --calendar-row-height definido via JS) */
-        .calendar-day {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          border: 1.5px solid #e0e0e0;
-          border-radius: 10px;
-          background: #fff;
-          cursor: pointer;
-          padding: 8px;
-          min-height: var(--calendar-row-height, 72px);
-          box-sizing: border-box;
-        }
+        
         .calendar-day.empty { background: transparent; border: none; cursor: default; }
         .calendar-day.available:hover { background: #e8f5e9; transform: scale(1.02); }
         .calendar-day.reserved { background: #e74c3c; color: #fff; cursor: not-allowed; }
@@ -786,13 +799,72 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
 
         /* Quando fullscreen: força grid-auto-rows a usar o valor calculado e não permitir scroll interno (garante que todas as linhas fiquem visíveis) */
         .modal-content.calendar-modal.fullscreen .calendar-body { overflow: hidden; }
-        .modal-content.calendar-modal.fullscreen .calendar-grid { grid-auto-rows: var(--calendar-row-height, 72px); }
+        
+        /* ---------- FIX DEFINITIVO DO CALENDÁRIO ---------- */
 
-        /* Desktop/tablet: permitir scroll se necessário */
-        @media (min-width: 769px) {
-          .calendar-body { overflow: auto; max-height: calc(90vh - var(--calendar-header-height, 72px) - 24px); }
-        }
+       /* Corpo do calendário SEM scroll */
+       .calendar-body {
+         flex: 1;
+         overflow: hidden;
+         padding: 8px;
+       }
 
+       /* Grid travado: 7 colunas × 6 linhas */
+       .calendar-grid {
+         display: grid;
+         grid-template-columns: repeat(7, 1fr);
+         grid-template-rows: repeat(6, 1fr);
+         gap: 6px;
+         height: 100%;
+       }
+
+       /* Células de dia */
+       .calendar-day {
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         border: 1.5px solid #e0e0e0;
+         border-radius: 10px;
+         background: #fff;
+         box-sizing: border-box;
+         overflow: hidden;
+       }
+   
+       /* NÚMERO DO DIA — COR E TAMANHO CORRETOS */
+       .day-number {
+         font-size: clamp(12px, 2.5vw, 14px);
+         font-weight: 700;
+         color: #333;
+         line-height: 1;
+       }
+
+       /* PREÇO — MENOR E DISCRETO */
+       .day-price {
+         font-size: 11px;
+         margin-top: 2px;
+         color: #666;
+       }
+
+       /* Estados */
+       .calendar-day.reserved {
+         background: #e74c3c;
+         color: #fff;
+       }
+
+       .calendar-day.selected {
+         background: #27ae60;
+         color: #fff;
+       }
+
+       .calendar-day.today {
+         box-shadow: inset 0 0 0 2px #27ae60;
+       }
+
+       .calendar-day.past {
+         opacity: 0.4;
+         cursor: not-allowed;
+       }
+        
         /* Beds Modal */
         .beds-modal {
           max-width: 900px;
@@ -1015,36 +1087,376 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           z-index: 100;
         }
 
-        /* Responsive */
+        /* ========== RESPONSIVIDADE MOBILE ========== */
         @media (max-width: 768px) {
+          
+        /* CALENDÁRIO MOBILE — TRAVADO SEM SCROLL */
+        .calendar-modal {
+          height: 100vh;
+        }
+
+        .calendar-body {
+          height: calc(100vh - 120px);
+        }
+          
+          /* Hero Section - Mobile */
+          .hero {
+            height: 100vh;
+            height: 100dvh; /* Dynamic viewport height */
+          }
+
           .hero h1 {
-            font-size: 2.5rem;
+            font-size: 2rem;
+            padding: 0 20px;
+            line-height: 1.2;
           }
 
           .hero p {
             font-size: 1rem;
+            padding: 0 20px;
           }
 
           .hero-buttons {
             flex-direction: column;
             width: 100%;
             max-width: 300px;
+            padding: 0 20px;
+          }
+
+          .btn-primary, .btn-secondary {
+            width: 100%;
+            padding: 14px 24px;
+            font-size: 0.95rem;
+          }
+
+          .carousel-btn {
+            width: 40px;
+            height: 40px;
+          }
+
+          .carousel-prev {
+            left: 10px;
+          }
+
+          .carousel-next {
+            right: 10px;
+          }
+
+          .carousel-indicators {
+            bottom: 20px;
+          }
+
+          /* Rooms Section - Mobile */
+          .rooms-section {
+            padding: 40px 16px;
+          }
+
+          .rooms-section h2 {
+            font-size: 1.8rem;
+            padding: 0 10px;
+          }
+
+          .rooms-section > p {
+            font-size: 1rem;
+            padding: 0 10px;
+            margin-bottom: 2rem;
+          }
+
+          .rooms-grid {
+            gap: 30px;
+          }
+
+          .room-card {
+            margin: 0 auto;
+            max-width: 100%;
+          }
+
+          .room-header {
+            padding: 20px;
+            font-size: 1.3rem;
+          }
+
+          .room-carousel {
+            height: 300px;
+          }
+
+          .room-carousel .carousel-btn {
+            width: 36px;
+            height: 36px;
+          }
+
+          .room-info {
+            padding: 20px;
+          }
+
+          .highlight {
+            flex-direction: row;
+            align-items: flex-start;
+          }
+
+          .highlight-icon {
+            font-size: 1.3rem;
+          }
+
+          /* Benefits Section - Mobile */
+          .benefits-section {
+            padding: 40px 16px;
+          }
+
+          .benefits-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
           }
 
           .benefits-grid {
             grid-template-columns: 1fr;
+            gap: 20px;
+          }
+
+          .benefit-card {
+            padding: 24px;
+          }
+
+          .benefit-icon {
+            font-size: 2.5rem;
+          }
+
+          .benefit-card h3 {
+            font-size: 1.1rem;
+          }
+
+          /* Testimonials Section - Mobile */
+          .testimonials-section {
+            padding: 40px 16px;
+          }
+
+          .testimonials-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
           }
 
           .testimonials-grid {
             grid-template-columns: 1fr;
+            gap: 20px;
+          }
+
+          .testimonial-card {
+            padding: 24px;
+          }
+
+          .testimonial-text {
+            font-size: 0.95rem;
+          }
+
+          /* Reservation Section - Mobile */
+          .reservation-section {
+            padding: 40px 16px;
+            min-height: auto;
           }
 
           .reservation-cards {
             flex-direction: column;
+            gap: 24px;
+            width: 100%;
           }
 
           .reservation-card {
             max-width: 100%;
+            width: 100%;
+            padding: 24px 20px;
+          }
+
+          .reservation-card h3 {
+            font-size: 1.5rem;
+          }
+
+          .form-group input,
+          .form-group select {
+            font-size: 16px; /* Evita zoom no iOS */
+            padding: 14px;
+          }
+
+          .btn-reserve {
+            padding: 16px;
+            font-size: 1rem;
+          }
+
+          .price-summary {
+            padding: 16px;
+          }
+
+          .price-line {
+            font-size: 0.95rem;
+          }
+
+          .price-line.total {
+            font-size: 1.2rem;
+          }
+
+          /* Beds Modal - Mobile */
+          .beds-modal {
+            width: 100%;
+            max-width: 100%;
+            margin: 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+          }
+
+          .beds-grid {
+            grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+            gap: 10px;
+          }
+
+          .bed-item {
+            padding: 8px;
+          }
+
+          .bed-icon {
+            width: 20px;
+            height: 20px;
+          }
+
+          .modal-actions {
+            flex-direction: column;
+            gap: 10px;
+          }
+
+          .modal-actions button {
+            width: 100%;
+          }
+
+          /* Suites Modal - Mobile */
+          .suites-modal {
+            width: 100%;
+            max-width: 100%;
+            margin: 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+          }
+
+          .suites-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+          }
+
+          .suite-item {
+            padding: 16px;
+          }
+
+          /* Lightbox - Mobile */
+          .lightbox img {
+            max-width: 95%;
+            max-height: 85%;
+          }
+
+          .lightbox-close {
+            top: 10px;
+            right: 10px;
+            width: 44px;
+            height: 44px;
+          }
+
+          .lightbox .carousel-btn {
+            width: 44px;
+            height: 44px;
+          }
+
+          /* Footer - Mobile */
+          footer {
+            padding: 30px 20px;
+            font-size: 0.95rem;
+          }
+
+          footer h3 {
+            font-size: 1.3rem;
+          }
+
+          /* Modal Geral - Mobile */
+          .modal-content {
+            width: 95%;
+            max-width: 95%;
+            margin: 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+          }
+
+          .modal-close {
+            top: 10px;
+            right: 10px;
+          }
+
+          /* Ajustes gerais de texto */
+          body {
+            font-size: 16px;
+            -webkit-text-size-adjust: 100%;
+          }
+
+          h1, h2, h3, h4, h5, h6 {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+          }
+
+          /* Evitar zoom indesejado em inputs no iOS */
+          input, select, textarea {
+            font-size: 16px !important;
+          }
+
+          /* Melhorar toque em botões */
+          button, a, .btn-primary, .btn-secondary, .btn-text {
+            min-height: 44px;
+            min-width: 44px;
+          }
+        }
+
+        /* Landscape Mobile (paisagem) */
+        @media (max-width: 768px) and (orientation: landscape) {
+          .hero {
+            height: 100vh;
+          }
+
+          .hero h1 {
+            font-size: 1.8rem;
+          }
+
+          .hero p {
+            font-size: 0.9rem;
+          }
+
+          .hero-buttons {
+            flex-direction: row;
+            max-width: 100%;
+            gap: 10px;
+          }
+
+          .btn-primary, .btn-secondary {
+            padding: 12px 20px;
+            font-size: 0.9rem;
+          }
+        }
+
+        /* Extra small devices (menos de 375px) */
+        @media (max-width: 375px) {
+          .hero h1 {
+            font-size: 1.6rem;
+          }
+
+          .rooms-section h2,
+          .benefits-section h2,
+          .testimonials-section h2 {
+            font-size: 1.5rem;
+          }
+
+          .room-header {
+            font-size: 1.2rem;
+            padding: 16px;
+          }
+
+          .reservation-card {
+            padding: 20px 16px;
+          }
+
+          .reservation-card h3 {
+            font-size: 1.3rem;
           }
         }
       `}),i&&(0,S.jsxs)(`div`,{className:`alert-banner`,children:[`⚠️ `,i,` O sistema está usando valores padrão.`]}),(0,S.jsx)(pe,{}),(0,S.jsxs)(`section`,{className:`rooms-section`,id:`rooms-section`,children:[(0,S.jsx)(`h2`,{children:`Nossos quartos`}),(0,S.jsx)(`p`,{children:`Escolha o Hostel perfeito para sua experiência inesquecível!`}),(0,S.jsx)(`div`,{className:`rooms-grid`,children:a.map((e,n)=>(0,S.jsx)(me,{...e,onShowMore:()=>t(e.name)},n))})]}),(0,S.jsx)(O,{}),(0,S.jsx)(he,{}),(0,S.jsx)(`section`,{className:`reservation-section`,id:`reservation-section`,children:(0,S.jsxs)(`div`,{className:`reservation-cards`,children:[(0,S.jsx)(ye,{title:`Nice Place`,roomId:`jb`,sheetsData:n}),(0,S.jsx)(ye,{title:`Quarto Feminino FreiSa`,roomId:`ar`,sheetsData:n}),(0,S.jsx)(ye,{title:`Quarto Misto`,roomId:`q007`,sheetsData:n}),(0,S.jsx)(ye,{title:`Suítes`,roomId:`q777`,sheetsData:n})]})}),(0,S.jsxs)(`footer`,{children:[(0,S.jsx)(`h3`,{children:`FreiSa Hostel`}),(0,S.jsx)(`p`,{children:`Copacabana, Rio de Janeiro - Brasil`}),(0,S.jsx)(`p`,{children:`WhatsApp: +55 21 99730-5179`}),(0,S.jsx)(`p`,{style:{marginTop:`20px`,opacity:.7},children:`© 2025 FreiSa Hostel. Todos os direitos reservados.`})]}),e&&(0,S.jsx)(`div`,{className:`modal-overlay`,onClick:()=>t(null),children:(0,S.jsxs)(`div`,{className:`modal-content calendar-modal`,onClick:e=>e.stopPropagation(),children:[(0,S.jsx)(`button`,{className:`modal-close`,onClick:()=>t(null),children:(0,S.jsx)(x,{})}),(0,S.jsx)(`h2`,{style:{marginBottom:`1rem`},children:e}),(0,S.jsx)(`div`,{style:{lineHeight:1.8,color:`#666`,whiteSpace:`pre-line`},children:a.find(t=>t.name===e)?.fullDescription||``})]})})]})}(0,c.createRoot)(document.getElementById(`root`)).render((0,S.jsx)(l.StrictMode,{children:(0,S.jsx)(be,{})}));
