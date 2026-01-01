@@ -1,3 +1,4 @@
+```javascript
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { ChevronLeft, ChevronRight, X, Loader } from 'lucide-react';
 
@@ -21,7 +22,7 @@ const parseLocalDate = (dateStr) => {
 };
 
 const formatLocalDate = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-const formatCurrency = (value) => `R$ ${value.toFixed(2).replace('.', ',')}`;
+const formatCurrency = (value) => `R$ ${value.toFixed(2).replace('. ', ',')}`;
 
 const formatBRDate = (dateStr) => {
   if (!dateStr) return '';
@@ -126,7 +127,7 @@ const useSheetsData = () => {
           extras: [
             { key: 'early_checkin', price: '30' },
             { key: 'late_checkout', price: '30' },
-            { key: 'transfer_arrival', price: '150' },
+            { key:  'transfer_arrival', price: '150' },
             { key: 'transfer_departure', price: '150' },
             { key:  'base_price_nice_place', price: '100' },
             { key: 'base_price_quarto_feminino', price: '120' },
@@ -153,7 +154,7 @@ const useSheetsData = () => {
           fetchSheet(SHEET_GIDS.calendar),
           fetchSheet(SHEET_GIDS.pricing),
           fetchSheet(SHEET_GIDS.rooms),
-          fetchSheet(SHEET_GIDS.beds),
+          fetchSheet(SHEET_GIDS. beds),
           fetchSheet(SHEET_GIDS.suites),
           fetchSheet(SHEET_GIDS.extras)
         ]);
@@ -206,7 +207,7 @@ const useAvailability = (sheetsData, roomId, checkin, checkout) => {
     const end = parseLocalDate(checkout);
     const dates = [];
 
-    for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
+    for (let d = new Date(start); d < end; d.setDate(d. getDate() + 1)) {
       dates.push(formatLocalDate(d));
     }
 
@@ -296,7 +297,7 @@ const useDynamicPricing = (sheetsData, roomId, checkin, checkout, guests, select
 
       let nightTotal;
       if (roomId === 'q777') {
-        nightTotal = pricePerUnit * selectedSuites. length;
+        nightTotal = pricePerUnit * selectedSuites.length;
       } else {
         nightTotal = pricePerUnit * guests;
       }
@@ -316,7 +317,7 @@ const useCarousel = (images, interval = 5000) => {
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
-    if (! isPaused && images.length > 1) {
+    if (!isPaused && images.length > 1) {
       const timer = setInterval(() => {
         setCurrentIndex((prev) => (prev + 1) % images.length);
       }, interval);
@@ -349,7 +350,7 @@ const Hero = () => {
 
   const scrollToRooms = () => {
     const el = document.getElementById('rooms-section');
-    if (el) el.scrollIntoView({ behavior: 'smooth', block:  'start' });
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   return (
@@ -525,7 +526,7 @@ const BenefitsSection = () => {
 const TestimonialsSection = () => {
   const testimonials = [
     { text: 'Fiquei 4 noites em Copacabana.  Localização excelente — mercados, padarias e bares na mesma rua; a apenas 2 minutos da praia... ', name: 'Hóspede', location: 'Brasil' },
-    { text: 'Minha hospedagem foi super tranquila. A um quarteirão da praia e perto do SESC Copacabana... ', name: 'Hóspede', location: 'Internacional' },
+    { text: 'Minha hospedagem foi super tranquila.  A um quarteirão da praia e perto do SESC Copacabana... ', name: 'Hóspede', location: 'Internacional' },
     { text: 'Localização excelente; o proprietário estava disponível sempre que precisei... ', name: 'Hóspede', location: 'São Paulo' }
   ];
 
@@ -608,7 +609,7 @@ const CalendarModal = ({ onClose, onSelectDate, sheetsData, roomId, selectedDate
     const year = currentDate.getFullYear();
     const month = currentDate. getMonth();
     const dateStr = formatDateToYYYYMMDD(year, month, day);
-    const priceRow = sheetsData.pricing.find(p => p.room_id === roomId && p.date === dateStr);
+    const priceRow = sheetsData.pricing.find(p => p.room_id === roomId && p. date === dateStr);
     return priceRow ? parseFloat(priceRow.price) : getBasePrice(sheetsData, roomId);
   };
 
@@ -728,9 +729,9 @@ const BedsModal = ({ onClose, onConfirm, maxBeds, selectedBeds = [], sheetsData,
   const [selected, setSelected] = useState(new Set(selectedBeds));
   
   const availableBeds = [
-  "C1-T","C1-B","C2-T","C2-B","C3-T","C3-B",
-  "C4-T","C4-B","C5-T","C5-B","C6-T","C6-B","C7-T","C7-B"
-];
+    "C1-T","C1-B","C2-T","C2-B","C3-T","C3-B",
+    "C4-T","C4-B","C5-T","C5-B","C6-T","C6-B","C7-T","C7-B"
+  ];
 
   const toggleBed = (bedId) => {
     if (! availableBeds.includes(bedId)) return;
@@ -838,7 +839,7 @@ const SuitesModal = ({ onClose, onConfirm, selectedSuites = [], sheetsData, chec
     if (!availableSuites.includes(suiteId)) return;
     
     const newSelected = new Set(selected);
-    if (newSelected. has(suiteId)) {
+    if (newSelected.has(suiteId)) {
       newSelected.delete(suiteId);
     } else if (newSelected.size < 3) {
       newSelected.add(suiteId);
@@ -946,9 +947,9 @@ const ReservationCard = ({ title, roomId, sheetsData }) => {
 
     const bedsText = isSuite ? selectedSuites.join(', ') : selectedBeds.join(', ');
     
-    let message = `Olá!  Gostaria de solicitar reserva para ${title}. 
+    let message = `Olá! Gostaria de solicitar reserva para ${title}. 
 
-📅 Check-in: ${formatBRDate(checkin)} (entrada às 14:00)
+📅 Check-in: ${formatBRDate(checkin)} (entrada às 14: 00)
 📅 Check-out: ${formatBRDate(checkout)} (saída até 12:00)
 🌙 Noites: ${nights}
 👥 Hóspedes: ${guests}
@@ -1016,7 +1017,7 @@ Obrigado! `;
           onClick={() => isSuite ? setShowSuitesModal(true) : setShowBedsModal(true)}
         >
           {isSuite ? 'Selecionar suítes' : 'Selecionar camas'}
-          {(isSuite ?  selectedSuites : selectedBeds).length > 0 && ` (${(isSuite ? selectedSuites :  selectedBeds).length})`}
+          {(isSuite ?  selectedSuites :  selectedBeds).length > 0 && ` (${(isSuite ? selectedSuites : selectedBeds).length})`}
         </button>
 
         <div className="extras-section">
@@ -1129,30 +1130,25 @@ export default function App() {
   const [showModal, setShowModal] = useState(null);
   const { data: sheetsData, isLoading, error } = useSheetsData();
 
-  // ✅ SETUP DE META TAGS - CRÍTICO PARA MOBILE E GOOGLE TRANSLATE
+  // ✅ FIX COMPLETO: Meta tags + Google Translate + Mobile Responsivity
   useEffect(() => {
     try {
-      // 1. Configurar HTML root
-      const html = document. documentElement;
+      const html = document.documentElement;
       html.lang = 'pt-BR';
       html.setAttribute('lang', 'pt-BR');
       html.setAttribute('translate', 'no');
       html.classList.add('notranslate');
 
-      // 2. Configurar BODY
       document.body.setAttribute('translate', 'no');
       document.body.classList.add('notranslate');
 
-      // 3. Acessar HEAD
       const head = document.head || document.getElementsByTagName('head')[0];
 
-      // Função auxiliar para meta tags
       const ensureMeta = (attrName, name, content) => {
         let selector;
         if (attrName === 'name') selector = `meta[name="${name}"]`;
         else if (attrName === 'http-equiv') selector = `meta[http-equiv="${name}"]`;
         else selector = `meta[${attrName}="${name}"]`;
-        
         let meta = head.querySelector(selector);
         if (!meta) {
           meta = document.createElement('meta');
@@ -1166,7 +1162,7 @@ export default function App() {
         }
       };
 
-      // ✅ VIEWPORT - CRÍTICO PARA MOBILE (máximo suporte)
+      // ✅ VIEWPORT - CRITICAL FOR MOBILE
       ensureMeta('name', 'viewport', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover');
       
       // ✅ Prevenir Google Translate
@@ -1174,26 +1170,17 @@ export default function App() {
       ensureMeta('http-equiv', 'Content-Language', 'pt-BR');
       ensureMeta('name', 'locale', 'pt-BR');
       
-      // ✅ Otimizações mobile
+      // ✅ Mobile optimizations
       ensureMeta('name', 'apple-mobile-web-app-capable', 'yes');
       ensureMeta('name', 'apple-mobile-web-app-status-bar-style', 'black-translucent');
       ensureMeta('name', 'format-detection', 'telephone=no');
       ensureMeta('name', 'mobile-web-app-capable', 'yes');
-      ensureMeta('name', 'theme-color', '#ffffff');
-
-      // ✅ Prevenir gestos de zoom
-      const preventGesture = (e) => e.preventDefault();
-      document.addEventListener('gesturestart', preventGesture, false);
-      document.addEventListener('touchmove', (e) => {
-        if (e.scale && e.scale !== 1) {
-          e.preventDefault();
-        }
-      }, { passive: false });
-
-      return () => {
-        document.removeEventListener('gesturestart', preventGesture);
-      };
-
+      
+      // ✅ Prevenir zoom indesejado
+      document.addEventListener('gesturestart', function (e) {
+        e.preventDefault();
+      });
+      
     } catch (e) {
       console.warn('Meta setup error:', e);
     }
@@ -1261,7 +1248,7 @@ Oferecemos guarda de bagagem, ideal para quem chega cedo ou precisa aproveitar a
 Um espaço simples, funcional e acolhedor, perfeito para quem busca conforto, praticidade e uma excelente localização. `,
       highlights: [
         { icon: '🚿', title: 'Banheiro compartilhado', text: 'Banheiro de uso coletivo, sempre limpo e organizado, disponível para todos os hóspedes.' },
-        { icon: '🛋️', title: 'Áreas compartilhadas', text: 'Espaços compartilhados, com área para circulação e convivência.' },
+        { icon: '🛋️', title: 'Áreas compartilhadas', text:  'Espaços compartilhados, com área para circulação e convivência.' },
         { icon: '🛏️', title: 'Quarto compartilhado', text: 'Dormitórios coletivos, confortáveis e seguros, ideais para quem busca economia e convivência.' }
       ],
       hasCarousel: false
@@ -1295,53 +1282,7 @@ Espaço equipado com extintor de incêndio.
 Wi-Fi rápido, ideal para lazer ou trabalho remoto. 
 
 🍳 Cozinha compartilhada e área de refeições
-Cozinha completa para preparar suas próprias refeições com total conforto:
-• Refrigerador, micro-ondas, fogão e forno
-• Cafeteira, chaleira elétrica, torradeira e liquidificador
-• Louças, talheres, taças de vinho e utensílios básicos
-• Panelas, vasilhas, óleo, sal e pimenta
-
-🧳 Serviços adicionais
-Oferecemos guarda de bagagem, ideal para quem chega cedo ou precisa aproveitar a cidade até mais tarde no dia do check-out.
-
-Um espaço simples, funcional e acolhedor, perfeito para quem busca conforto, praticidade e uma excelente localização.`,
-      highlights: [
-        { icon: '🚿', title: 'Banheiro compartilhado', text: 'Banheiro de uso coletivo, sempre limpo e organizado, disponível para todos os hóspedes.' },
-        { icon: '🛋️', title: 'Áreas compartilhadas', text: 'Espaços compartilhados, com área para circulação e convivência.' },
-        { icon: '🛏️', title: 'Quarto compartilhado', text: 'Dormitórios coletivos, confortáveis e seguros, ideais para quem busca economia e convivência.' }
-      ],
-      hasCarousel: false
-    },
-    {
-      name: 'Suítes',
-      location: 'Quarto em Rio de Janeiro, Brasil',
-      beds: 3,
-      bathrooms: 'Banheiro privativo',
-      images: [
-        'https://i.imgur.com/W9koWkI.jpeg'
-      ],
-      description: 'Simplicidade, conforto e ótima localização definem esta hospedagem ideal para relaxar e curtir a cidade com tranquilidade. Um espaço acolhedor, funcional e bem equipado para você se sentir em casa desde o início.',
-      fullDescription: `Suítes — Detalhes
-
-Simplicidade, conforto e ótima localização definem esta hospedagem ideal para relaxar e curtir a cidade com tranquilidade. Um espaço acolhedor, funcional e bem equipado para você se sentir em casa desde o início.
-
-🛁 Banheiro completo
-Água quente, secador de cabelo e itens essenciais de higiene, como xampu, sabonete e gel de banho.
-
-🛏️ Quarto e lavanderia
-Ambiente confortável para descanso, com roupa de cama, espaço para roupas e ferro de passar.
-
-📺 Entretenimento e climatização
-TV e ar-condicionado para mais conforto nos dias quentes.
-
-🔒 Segurança
-Espaço equipado com extintor de incêndio.
-
-🌐 Internet e trabalho
-Wi-Fi rápido, ideal para lazer ou trabalho remoto.
-
-🍳 Cozinha compartilhada e área de refeições
-Cozinha completa com eletrodomésticos, utensílios, louças e itens básicos para preparo de refeições.
+Cozinha completa com eletrodomésticos, utensílios, louças e itens básicos para preparo de refeições. 
 
 🧳 Serviços adicionais
 Guarda de bagagem disponível para maior comodidade no check-in e check-out.
@@ -1359,11 +1300,11 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
       location: 'Quarto em Rio de Janeiro, Brasil',
       beds: 14,
       bathrooms: '2 banheiros compartilhados',
-      images: [
+      images:  [
         'https://i.imgur.com/OddkKoI.jpeg',
         'https://i.imgur.com/W9koWkI.jpeg',
         'https://i.imgur.com/yEaKK3Q.jpeg',
-        'https://i.imgur.com/HUd2mEN.jpeg'
+        'https://i.imgur.com/HUd2
       ],
       description: 'Espaço confortável e bem localizado em Copacabana. Ideal para quem quer aproveitar o melhor do Rio de Janeiro.',
       fullDescription: 'Espaço confortável e bem localizado em Copacabana. Ideal para quem quer aproveitar o melhor do Rio de Janeiro. Com 14 camas distribuídas em beliches e 2 banheiros compartilhados, oferecemos um ambiente social e acolhedor. A localização estratégica permite acesso rápido à praia, mercados, restaurantes e transporte público.',
@@ -1378,7 +1319,7 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
 
   if (isLoading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', flexDirection: 'column', gap: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems:  'center', height: '100vh', flexDirection: 'column', gap: '20px' }}>
         <Loader size={48} className="spinner" />
         <p>Carregando dados do hostel...</p>
       </div>
@@ -1427,12 +1368,13 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           -webkit-appearance: none;
           -moz-appearance: none;
           appearance: none;
+          font-size: 16px ! important;
         }
 
         /* Suavizar scrolling */
         * {
           scroll-behavior: smooth;
-          -webkit-overflow-scrolling: touch;
+          -webkit-overflow-scrolling:  touch;
         }
 
         /* Garantir que imagens sejam responsivas */
@@ -1442,7 +1384,7 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           display: block;
         }
 
-        .spinner {
+        . spinner {
           animation: spin 1s linear infinite;
         }
 
@@ -1455,6 +1397,7 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
         .hero {
           position: relative;
           height: 100vh;
+          height: 100dvh;
           overflow: hidden;
         }
 
@@ -1463,7 +1406,7 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           top: 0;
           left: 0;
           width: 100%;
-          height: 100%;
+          height:  100%;
           background-size: cover;
           background-position: center;
         }
@@ -1473,7 +1416,7 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           top: 0;
           left: 0;
           width: 100%;
-          height: 100%;
+          height:  100%;
           background: rgba(0, 0, 0, 0.5);
           z-index: 1;
         }
@@ -1498,14 +1441,18 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
         }
 
         .hero h1 {
-          font-size: 3.5rem;
+          font-size: clamp(2rem, 5vw, 3. 5rem);
           font-weight: 300;
           margin-bottom: 1rem;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .hero p {
-          font-size: 1.3rem;
+          font-size: clamp(1rem, 3vw, 1.3rem);
           margin-bottom: 2rem;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .hero-buttons {
@@ -1519,9 +1466,13 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           padding: 15px 30px;
           border: none;
           border-radius: 8px;
-          font-size: 1rem;
+          font-size:  1rem;
           cursor: pointer;
           transition: all 0.3s;
+          min-height: 44px;
+          min-width: 44px;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .btn-primary {
@@ -1529,9 +1480,9 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           color: white;
         }
 
-        .btn-primary:hover:not(:disabled) {
+        .btn-primary:hover: not(:disabled) {
           background: #1e8449;
-          transform: translateY(-3px);
+          transform:  translateY(-3px);
           box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
@@ -1542,7 +1493,7 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
 
         .btn-secondary:hover {
           background: #f0f0f0;
-          transform: translateY(-3px);
+          transform:  translateY(-3px);
           box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
@@ -1556,12 +1507,14 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           color: white;
           width: 50px;
           height: 50px;
-          border-radius: 50%;
+          border-radius:  50%;
           cursor: pointer;
           display: flex;
           align-items: center;
           justify-content: center;
           transition: background 0.3s;
+          min-height: 44px;
+          min-width: 44px;
         }
 
         .carousel-btn:hover {
@@ -1572,8 +1525,8 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           left: 20px;
         }
 
-        .carousel-next {
-          right: 20px;
+        . carousel-next {
+          right:  20px;
         }
 
         .carousel-indicators {
@@ -1589,11 +1542,13 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
         .indicator {
           width: 12px;
           height: 12px;
-          border-radius: 50%;
+          border-radius:  50%;
           background: rgba(255,255,255,0.5);
           border: none;
           cursor: pointer;
           transition: background 0.3s;
+          min-height: 44px;
+          min-width:  44px;
         }
 
         .indicator.active {
@@ -1602,23 +1557,28 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
 
         /* ROOMS */
         .rooms-section {
-          padding: 80px 20px;
-          max-width: 1200px;
+          padding: clamp(40px, 8vw, 80px) clamp(16px, 5vw, 20px);
+          max-width:  1200px;
           margin: 0 auto;
+          width: 100%;
         }
 
         .rooms-section h2 {
-          font-size: 2.5rem;
+          font-size: clamp(1.5rem, 5vw, 2.5rem);
           font-weight: 300;
           text-align: center;
           margin-bottom: 1rem;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .rooms-section > p {
           text-align: center;
-          font-size: 1.1rem;
+          font-size: clamp(1rem, 3vw, 1.1rem);
           color: #666;
           margin-bottom: 3rem;
+          word-wrap:  break-word;
+          overflow-wrap: break-word;
         }
 
         .rooms-grid {
@@ -1641,15 +1601,17 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
 
         .room-header {
           background: #f8f9fa;
-          padding: 30px;
-          font-size: 1.5rem;
+          padding: clamp(20px, 5vw, 30px);
+          font-size: clamp(1.2rem, 4vw, 1.5rem);
           font-weight: 600;
           border-bottom: 1px solid #e0e0e0;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .room-carousel {
           position: relative;
-          height: 500px;
+          height: clamp(250px, 60vw, 500px);
           overflow: hidden;
         }
 
@@ -1664,31 +1626,37 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           height: 40px;
         }
 
-        .room-carousel .carousel-indicators {
+        .room-carousel . carousel-indicators {
           bottom: 15px;
         }
 
         .room-info {
-          padding: 30px;
+          padding: clamp(20px, 5vw, 30px);
         }
 
         .room-location {
           color: #666;
           margin-bottom: 0.5rem;
+          font-size: clamp(0.9rem, 2vw, 1rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .room-specs {
           color: #666;
           margin-bottom: 1rem;
+          font-size: clamp(0.9rem, 2vw, 1rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
-        .divider {
+        . divider {
           height: 1px;
           background: #e0e0e0;
           margin: 1.5rem 0;
         }
 
-        .room-highlights {
+        . room-highlights {
           display: flex;
           flex-direction: column;
           gap: 1rem;
@@ -1701,13 +1669,16 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
         }
 
         .highlight-icon {
-          font-size: 1.5rem;
+          font-size: clamp(1.3rem, 3vw, 1.5rem);
           flex-shrink: 0;
         }
 
         .room-description {
           color: #666;
-          margin: 1rem 0;
+          margin:  1rem 0;
+          font-size: clamp(0.95rem, 2vw, 1rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .btn-text {
@@ -1717,19 +1688,22 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           text-decoration: underline;
           cursor: pointer;
           font-size: 1rem;
+          min-height: 44px;
         }
 
         /* BENEFITS */
         .benefits-section {
-          padding: 80px 20px;
+          padding: clamp(40px, 8vw, 80px) clamp(16px, 5vw, 20px);
           background: #f8f9fa;
         }
 
         .benefits-section h2 {
-          font-size: 2.5rem;
+          font-size: clamp(1.5rem, 5vw, 2.5rem);
           font-weight: 300;
           text-align: center;
           margin-bottom: 3rem;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .benefits-grid {
@@ -1740,9 +1714,9 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           gap: 30px;
         }
 
-        .benefit-card {
-          background: white;
-          padding: 30px;
+        . benefit-card {
+          background:  white;
+          padding: clamp(20px, 5vw, 30px);
           border-radius: 10px;
           box-shadow: 0 5px 20px rgba(0,0,0,0.1);
           text-align: center;
@@ -1755,43 +1729,51 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
         }
 
         .benefit-icon {
-          font-size: 3rem;
+          font-size: clamp(2. 5rem, 5vw, 3rem);
           margin-bottom: 1rem;
         }
 
         .benefit-card h3 {
-          font-size: 1.2rem;
-          margin-bottom: 0.5rem;
+          font-size: clamp(1rem, 3vw, 1.2rem);
+          margin-bottom:  0.5rem;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .benefit-card p {
-          color: #666;
+          color:  #666;
+          font-size: clamp(0.9rem, 2vw, 1rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         /* TESTIMONIALS */
         .testimonials-section {
-          padding: 80px 20px;
+          padding: clamp(40px, 8vw, 80px) clamp(16px, 5vw, 20px);
           max-width: 1200px;
           margin: 0 auto;
+          width: 100%;
         }
 
         .testimonials-section h2 {
-          font-size: 2.5rem;
+          font-size:  clamp(1.5rem, 5vw, 2.5rem);
           font-weight: 300;
           text-align: center;
           margin-bottom: 3rem;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
-        .testimonials-grid {
+        . testimonials-grid {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
           gap: 30px;
           margin-bottom: 2rem;
         }
 
-        .testimonial-card {
+        . testimonial-card {
           background: white;
-          padding: 30px;
+          padding: clamp(20px, 5vw, 30px);
           border-radius: 10px;
           box-shadow: 0 5px 20px rgba(0,0,0,0.1);
         }
@@ -1800,35 +1782,43 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           font-style: italic;
           color: #666;
           margin-bottom: 1.5rem;
+          font-size: clamp(0.95rem, 2vw, 1rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .testimonial-author {
           display: flex;
           align-items: center;
           gap: 15px;
-          margin-bottom: 1rem;
+          margin-bottom:  1rem;
         }
 
         .author-avatar {
           width: 50px;
           height: 50px;
-          border-radius: 50%;
+          border-radius:  50%;
           background: #27ae60;
           color: white;
           display: flex;
           align-items: center;
           justify-content: center;
           font-size: 1.5rem;
-          font-weight: bold;
+          font-weight:  bold;
+          flex-shrink: 0;
         }
 
         .author-name {
           font-weight: 600;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .author-location {
-          font-size: 0.9rem;
+          font-size: clamp(0.85rem, 2vw, 0.9rem);
           color: #666;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .testimonial-stars {
@@ -1836,17 +1826,19 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           font-size: 1.2rem;
         }
 
-        .testimonials-note {
+        . testimonials-note {
           text-align: center;
           color: #666;
-          font-size: 0.9rem;
+          font-size: clamp(0.85rem, 2vw, 0.9rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         /* RESERVATION */
         .reservation-section {
           min-height: 95vh;
           background: linear-gradient(135deg, #fa6866 0%, #fd8365 100%);
-          padding: 80px 20px;
+          padding:  clamp(40px, 8vw, 80px) clamp(16px, 5vw, 20px);
           display: flex;
           justify-content: center;
           align-items: center;
@@ -1856,7 +1848,7 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           display: flex;
           flex-wrap: wrap;
           gap: 30px;
-          justify-content: center;
+          justify-content:  center;
           max-width: 1800px;
         }
 
@@ -1864,24 +1856,28 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           background: rgba(255,255,255,0.15);
           backdrop-filter: blur(10px);
           border-radius: 24px;
-          padding: 32px 28px;
+          padding: clamp(20px, 5vw, 32px);
           flex: 1 1 320px;
           max-width: 420px;
           color: white;
         }
 
         .reservation-card h3 {
-          font-size: 1.8rem;
-          margin-bottom: 0.5rem;
+          font-size: clamp(1.3rem, 4vw, 1.8rem);
+          margin-bottom:  0.5rem;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .card-subtitle {
-          font-size: 0.9rem;
+          font-size: clamp(0.85rem, 2vw, 0.9rem);
           opacity: 0.9;
           margin-bottom: 1.5rem;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
-        .form-group {
+        . form-group {
           margin-bottom: 1.5rem;
         }
 
@@ -1889,21 +1885,25 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           display: block;
           margin-bottom: 0.5rem;
           font-weight: 500;
+          font-size: clamp(0.9rem, 2vw, 1rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .form-group input,
         .form-group select {
           width: 100%;
-          padding: 12px;
+          padding: 14px;
           border: 2px solid rgba(255,255,255,0.3);
           border-radius: 8px;
           background: rgba(255,255,255,0.1);
           color: white;
-          font-size: 1rem;
+          font-size: 16px;
           cursor: pointer;
+          box-sizing: border-box;
         }
 
-        .form-group input::placeholder {
+        .form-group input:: placeholder {
           color: rgba(255,255,255,0.7);
         }
 
@@ -1919,6 +1919,9 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           text-align: center;
           margin-bottom: 1.5rem;
           animation: pulse 2s infinite;
+          font-size: clamp(0.9rem, 2vw, 1rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         @keyframes pulse {
@@ -1926,17 +1929,20 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           50% { opacity: 0.8; }
         }
 
-        .btn-select {
+        . btn-select {
           width: 100%;
-          padding: 12px;
+          padding: 14px;
           background: rgba(255,255,255,0.2);
           border: 2px solid rgba(255,255,255,0.3);
           border-radius: 8px;
           color: white;
-          font-size: 1rem;
+          font-size: 16px;
           cursor: pointer;
           margin-bottom: 1.5rem;
           transition: all 0.3s;
+          min-height: 44px;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .btn-select:hover {
@@ -1951,6 +1957,9 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
         .extras-section h4,
         .transfer-section h4 {
           margin-bottom: 1rem;
+          font-size: clamp(1rem, 2vw, 1.1rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .checkbox-label {
@@ -1959,12 +1968,17 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           gap: 10px;
           margin-bottom: 0.5rem;
           cursor: pointer;
+          font-size: clamp(0.9rem, 2vw, 1rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
-        .checkbox-label input[type="checkbox"] {
+        . checkbox-label input[type="checkbox"] {
           width: 20px;
           height: 20px;
           cursor: pointer;
+          min-height: 44px;
+          min-width: 44px;
         }
 
         .transfer-btn {
@@ -1977,43 +1991,56 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           color: white;
           cursor: pointer;
           transition: all 0.3s;
+          min-height: 44px;
+          font-size: clamp(0.9rem, 2vw, 1rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
-        .transfer-btn.active {
+        .transfer-btn. active {
           background: linear-gradient(135deg, #3498db, #2d8fcb);
           animation: pulse 2s infinite;
         }
 
-        .price-summary {
+        . price-summary {
           background: rgba(255,255,255,0.1);
           padding: 20px;
-          border-radius: 8px;
+          border-radius:  8px;
           margin-bottom: 1.5rem;
         }
 
         .price-summary h4 {
           margin-bottom: 1rem;
+          font-size: clamp(1rem, 2vw, 1.1rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .price-line {
           display: flex;
           justify-content: space-between;
           margin-bottom: 0.5rem;
+          font-size: clamp(0.9rem, 2vw, 1rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
-        .price-line.total {
-          font-size: 1.3rem;
+        .price-line. total {
+          font-size: clamp(1.1rem, 3vw, 1.3rem);
           font-weight: bold;
           padding-top: 0.5rem;
           border-top: 1px solid rgba(255,255,255,0.3);
           margin-top: 0.5rem;
         }
 
-        .btn-reserve {
+        . btn-reserve {
           width: 100%;
-          padding: 15px;
-          font-size: 1.1rem;
+          padding: 16px;
+          font-size: clamp(0.95rem, 2vw, 1.1rem);
           font-weight: 600;
+          min-height: 44px;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .btn-reserve:disabled {
@@ -2021,24 +2048,29 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           cursor: not-allowed;
         }
 
-        .error-message {
+        . error-message {
           color: #ff6b6b;
           background: rgba(255,255,255,0.9);
           padding: 10px;
-          border-radius: 5px;
-          margin-bottom: 1rem;
+          border-radius:  5px;
+          margin-bottom:  1rem;
           text-align: center;
+          font-size: clamp(0.9rem, 2vw, 1rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
-        .whatsapp-note {
+        . whatsapp-note {
           text-align: center;
-          font-size: 0.9rem;
+          font-size: clamp(0.85rem, 2vw, 0.9rem);
           opacity: 0.8;
           margin-top: 1rem;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
-        /* ---------- OVERLAYS (garante que o calendário fica acima de tudo) ---------- */
-        .calendar-overlay, .modal-overlay {
+        /* MODALS */
+        .modal-overlay {
           position: fixed;
           top: 0;
           left: 0;
@@ -2048,44 +2080,54 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           display: flex;
           align-items: center;
           justify-content: center;
-          z-index: 2147483646; /* alto */
+          z-index: 2147483646;
         }
-        .calendar-overlay { z-index: 2147483647; } /* garantir prioridade máxima para calendário fullscreen */
 
-        /* ---------- CALENDAR MODAL ---------- */
-        .modal-content.calendar-modal {
+        .calendar-overlay {
+          z-index: 2147483647;
+        }
+
+        .modal-content {
           background: #fff;
           border-radius: 12px;
           width: min(920px, 96%);
           max-width: 920px;
           max-height: 90vh;
-          overflow: hidden;
+          overflow:  hidden;
           display: flex;
           flex-direction: column;
           position: relative;
         }
 
-        /* Fullscreen para mobile: ocupa 100% viewport sem sobreposição */
-        .modal-content.calendar-modal.fullscreen {
+        .modal-content. fullscreen {
           position: fixed;
           top: 0;
           left: 0;
           width: 100vw;
           height: 100vh;
           max-width: 100vw;
-          max-height: 100vh;
+          max-height:  100vh;
           margin: 0;
           border-radius: 0;
           padding: env(safe-area-inset-top) 12px env(safe-area-inset-bottom) 12px;
           z-index: 2147483647;
           box-shadow: none;
-          display: flex;
-          flex-direction: column;
-          background: #fff;
           overflow: hidden;
         }
 
-        /* Header fixo / visível */
+        .modal-close {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          background: none;
+          border: none;
+          cursor: pointer;
+          z-index: 10;
+          min-height: 44px;
+          min-width: 44px;
+        }
+
+        /* CALENDAR */
         .calendar-header {
           display: grid;
           grid-template-columns: 44px 1fr auto;
@@ -2095,92 +2137,104 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           background: #fff;
           position: sticky;
           top: 0;
-          z-index: 10;
+          z-index:  10;
         }
-        .calendar-header h3 { text-align: center; margin: 0; font-size: 1.05rem; font-weight: 600; }
 
-        /* Dia-nome */
-        .calendar-day-name { text-align: center; font-weight: 600; padding: 6px 4px; color: #666; font-size: 0.85rem; }
-        
-        .calendar-day.empty { background: transparent; border: none; cursor: default; }
-        .calendar-day.available:hover { background: #e8f5e9; transform: scale(1.02); }
-        .calendar-day.reserved { background: #e74c3c; color: #fff; cursor: not-allowed; }
-        .calendar-day.selected { background: #27ae60; color: #fff; }
-        .calendar-day.today { box-shadow: inset 0 0 0 2px #e74c3c; }
-        .calendar-day.past { opacity: 0.45; cursor: not-allowed; }
+        .calendar-header h3 {
+          text-align: center;
+          margin: 0;
+          font-size: clamp(1rem, 3vw, 1.05rem);
+          font-weight: 600;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
+        }
 
-        .day-number { font-size: 0.95rem; font-weight: 700; }
-        .day-price { font-size: 0.75rem; margin-top: 4px; }
+        .calendar-day-name {
+          text-align: center;
+          font-weight: 600;
+          padding: 6px 4px;
+          color: #666;
+          font-size: 0.85rem;
+        }
 
-        /* Quando fullscreen: força grid-auto-rows a usar o valor calculado e não permitir scroll interno (garante que todas as linhas fiquem visíveis) */
-        .modal-content.calendar-modal.fullscreen .calendar-body { overflow: hidden; }
-        
-        /* ---------- FIX DEFINITIVO DO CALENDÁRIO ---------- */
+        .calendar-day. empty {
+          background: transparent;
+          border: none;
+          cursor: default;
+        }
 
-       /* Corpo do calendário SEM scroll */
-       .calendar-body {
-         flex: 1;
-         overflow: hidden;
-         padding: 8px;
-       }
+        .calendar-day. available: hover {
+          background: #e8f5e9;
+          transform: scale(1.02);
+        }
 
-       /* Grid travado: 7 colunas × 6 linhas */
-       .calendar-grid {
-         display: grid;
-         grid-template-columns: repeat(7, 1fr);
-         grid-template-rows: repeat(6, 1fr);
-         gap: 6px;
-         height: 100%;
-       }
+        .calendar-day.reserved {
+          background: #e74c3c;
+          color: #fff;
+          cursor: not-allowed;
+        }
 
-       /* Células de dia */
-       .calendar-day {
-         display: flex;
-         align-items: center;
-         justify-content: center;
-         border: 1.5px solid #e0e0e0;
-         border-radius: 10px;
-         background: #fff;
-         box-sizing: border-box;
-         overflow: hidden;
-       }
-   
-       /* NÚMERO DO DIA — COR E TAMANHO CORRETOS */
-       .day-number {
-         font-size: clamp(12px, 2.5vw, 14px);
-         font-weight: 700;
-         color: #333;
-         line-height: 1;
-       }
+        .calendar-day.selected {
+          background: #27ae60;
+          color: #fff;
+        }
 
-       /* PREÇO — MENOR E DISCRETO */
-       .day-price {
-         font-size: 11px;
-         margin-top: 2px;
-         color: #666;
-       }
+        . calendar-day.today {
+          box-shadow: inset 0 0 0 2px #27ae60;
+        }
 
-       /* Estados */
-       .calendar-day.reserved {
-         background: #e74c3c;
-         color: #fff;
-       }
+        .calendar-day.past {
+          opacity: 0.4;
+          cursor: not-allowed;
+        }
 
-       .calendar-day.selected {
-         background: #27ae60;
-         color: #fff;
-       }
+        .day-number {
+          font-size: clamp(12px, 2. 5vw, 14px);
+          font-weight:  700;
+          color: #333;
+          line-height: 1;
+        }
 
-       .calendar-day.today {
-         box-shadow: inset 0 0 0 2px #27ae60;
-       }
+        .day-price {
+          font-size: 11px;
+          margin-top: 2px;
+          color: #666;
+        }
 
-       .calendar-day.past {
-         opacity: 0.4;
-         cursor: not-allowed;
-       }
-        
-        /* Beds Modal */
+        .calendar-body {
+          flex: 1;
+          overflow:  hidden;
+          padding: 8px;
+        }
+
+        .calendar-grid {
+          display: grid;
+          grid-template-columns: repeat(7, 1fr);
+          grid-template-rows: repeat(6, 1fr);
+          gap: 6px;
+          height: 100%;
+        }
+
+        .calendar-day {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          border: 1.5px solid #e0e0e0;
+          border-radius: 10px;
+          background: #fff;
+          box-sizing: border-box;
+          overflow: hidden;
+          cursor: pointer;
+          min-height: 44px;
+        }
+
+        .calendar-icon {
+          width: 24px;
+          height: 24px;
+        }
+
+        /* BEDS MODAL */
         .beds-modal {
           max-width: 900px;
         }
@@ -2188,20 +2242,22 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
         .beds-container {
           display: grid;
           gap: 30px;
-          margin: 2rem 0;
+          margin:  2rem 0;
         }
 
-        .beds-section h4 {
+        . beds-section h4 {
           margin-bottom: 1rem;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .beds-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-          gap: 15px;
+          grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+          gap: 10px;
         }
 
-        .bed-item {
+        . bed-item {
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -2209,12 +2265,14 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           background: none;
           border: none;
           cursor: pointer;
-          padding: 10px;
+          padding: 8px;
           border-radius: 8px;
           transition: transform 0.3s;
+          min-height: 44px;
+          min-width: 44px;
         }
 
-        .bed-item:hover:not(:disabled) {
+        .bed-item:hover: not(:disabled) {
           transform: scale(1.05);
         }
 
@@ -2223,18 +2281,9 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           opacity: 0.6;
         }
 
-        .bed-item.selected svg rect {
-          fill: #27ae60;
-        }
-
-        .bed-item.reserved svg rect {
-          fill: #e74c3c;
-        }
-
         .bed-icon {
-          width: 24px;
-          height: 24px;
-          margin-bottom: 5px;
+          width: 20px;
+          height: 20px;
           object-fit: contain;
         }
 
@@ -2242,40 +2291,35 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           display: flex;
           gap: 20px;
           justify-content: center;
-          margin: 2rem 0;
+          margin:  2rem 0;
+          flex-wrap: wrap;
         }
 
         .legend-box {
           width: 20px;
           height: 20px;
-          border-radius: 4px;
+          border-radius:  4px;
           display: inline-block;
           margin-right: 5px;
         }
 
-        .legend-box.available {
+        .legend-box. available {
           background: #add8e6;
         }
 
-        .legend-box.selected {
+        .legend-box. selected {
           background: #27ae60;
         }
 
-        .legend-box.reserved {
+        . legend-box.reserved {
           background: #e74c3c;
         }
 
-        .modal-actions {
-          display: flex;
-          gap: 15px;
-          justify-content: flex-end;
+        /* SUITES MODAL */
+        .suites-modal {
+          max-width: 900px;
         }
 
-      /* Suites Modal */
-        .suites-modal {
-         max-width: 900px;
-
-       }
         .suites-grid {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -2295,9 +2339,11 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           flex-direction: column;
           align-items: center;
           gap: 10px;
+          min-height: 44px;
+          min-width: 44px;
         }
 
-        .suite-item:hover:not(:disabled) {
+        .suite-item:hover: not(:disabled) {
           transform: scale(1.05);
         }
 
@@ -2308,7 +2354,7 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
 
         .suite-item.selected {
           background: #27ae60;
-          color: white;
+          color:  white;
           border-color: #27ae60;
         }
 
@@ -2321,24 +2367,36 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
         .suite-icon {
           width: 48px;
           height: 48px;
-          object-fit: contain;
+          object-fit:  contain;
         }
 
-        .suite-label {
-          font-size: 1.5rem;
-          font-weight: bold;
+        . suite-label {
+          font-size: clamp(1. 3rem, 3vw, 1.5rem);
+          font-weight:  bold;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .suite-price {
-          font-size: 0.9rem;
+          font-size: clamp(0.85rem, 2vw, 0.9rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
-        /* Lightbox */
+        .modal-actions {
+          display: flex;
+          gap: 15px;
+          justify-content:  flex-end;
+          padding: 20px;
+          flex-wrap: wrap;
+        }
+
+        /* LIGHTBOX */
         .lightbox {
           position: fixed;
           top: 0;
           left: 0;
-          width: 100vw;
+          width:  100vw;
           height: 100vh;
           background: rgba(0,0,0,0.95);
           display: flex;
@@ -2368,13 +2426,15 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           align-items: center;
           justify-content: center;
           transition: background 0.3s;
+          min-height: 44px;
+          min-width:  44px;
         }
 
         .lightbox-close:hover {
           background: rgba(255,255,255,0.3);
         }
 
-        .lightbox .carousel-btn {
+        . lightbox . carousel-btn {
           background: rgba(255,255,255,0.2);
         }
 
@@ -2382,15 +2442,27 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           background: rgba(255,255,255,0.3);
         }
 
-        /* Footer */
+        /* FOOTER */
         footer {
           background: #333;
           color: white;
-          padding: 40px 20px;
+          padding: clamp(30px, 5vw, 40px) clamp(16px, 5vw, 20px);
           text-align: center;
         }
 
-        /* Alert Banner */
+        footer h3 {
+          font-size: clamp(1.2rem, 4vw, 1.3rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
+        }
+
+        footer p {
+          font-size:  clamp(0.9rem, 2vw, 0.95rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
+        }
+
+        /* ALERT BANNER */
         .alert-banner {
           background: #fff3cd;
           border: 1px solid #ffc107;
@@ -2400,34 +2472,36 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           position: sticky;
           top: 0;
           z-index: 100;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         /* ========== RESPONSIVIDADE MOBILE ========== */
         @media (max-width: 768px) {
           
-        /* CALENDÁRIO MOBILE — TRAVADO SEM SCROLL */
-        .calendar-modal {
-          height: 100vh;
-        }
+          .calendar-modal {
+            height: 100vh;
+            height: 100dvh;
+          }
 
-        .calendar-body {
-          height: calc(100vh - 120px);
-        }
+          .calendar-body {
+            height: calc(100vh - 120px);
+            height: calc(100dvh - 120px);
+          }
           
-          /* Hero Section - Mobile */
           .hero {
             height: 100vh;
-            height: 100dvh; /* Dynamic viewport height */
+            height: 100dvh;
           }
 
           .hero h1 {
-            font-size: 2rem;
-            padding: 0 20px;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            padding:  0 20px;
             line-height: 1.2;
           }
 
           .hero p {
-            font-size: 1rem;
+            font-size: clamp(0.9rem, 2vw, 1rem);
             padding: 0 20px;
           }
 
@@ -2440,113 +2514,88 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
 
           .btn-primary, .btn-secondary {
             width: 100%;
-            padding: 14px 24px;
-            font-size: 0.95rem;
+            padding:  14px 24px;
+            font-size:  0.95rem;
+            min-height: 44px;
           }
 
           .carousel-btn {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
+            min-height: 36px;
+            min-width: 36px;
           }
 
           .carousel-prev {
             left: 10px;
           }
 
-          .carousel-next {
-            right: 10px;
+          . carousel-next {
+            right:  10px;
           }
 
           .carousel-indicators {
             bottom: 20px;
           }
 
-          /* Rooms Section - Mobile */
           .rooms-section {
             padding: 40px 16px;
           }
 
-          .rooms-section h2 {
-            font-size: 1.8rem;
+          . rooms-section h2 {
+            font-size: clamp(1.5rem, 4vw, 1.8rem);
             padding: 0 10px;
           }
 
-          .rooms-section > p {
-            font-size: 1rem;
+          . rooms-section > p {
+            font-size: clamp(0.95rem, 2vw, 1rem);
             padding: 0 10px;
             margin-bottom: 2rem;
           }
 
-          .rooms-grid {
-            gap: 30px;
-          }
-
-          .room-card {
-            margin: 0 auto;
-            max-width: 100%;
-          }
-
-          .room-header {
-            padding: 20px;
-            font-size: 1.3rem;
-          }
-
-          .room-carousel {
+          . room-carousel {
             height: 300px;
           }
 
-          .room-carousel .carousel-btn {
+          . room-carousel .carousel-btn {
             width: 36px;
             height: 36px;
+            min-height:  36px;
+            min-width: 36px;
           }
 
           .room-info {
             padding: 20px;
           }
 
-          .highlight {
-            flex-direction: row;
-            align-items: flex-start;
-          }
-
-          .highlight-icon {
-            font-size: 1.3rem;
-          }
-
-          /* Benefits Section - Mobile */
           .benefits-section {
             padding: 40px 16px;
           }
 
           .benefits-section h2 {
-            font-size: 1.8rem;
+            font-size: clamp(1.5rem, 4vw, 1.8rem);
             margin-bottom: 2rem;
           }
 
-          .benefits-grid {
+          . benefits-grid {
             grid-template-columns: 1fr;
             gap: 20px;
           }
 
-          .benefit-card {
+          . benefit-card {
             padding: 24px;
           }
 
           .benefit-icon {
-            font-size: 2.5rem;
+            font-size: clamp(2rem, 4vw, 2.5rem);
           }
 
-          .benefit-card h3 {
-            font-size: 1.1rem;
-          }
-
-          /* Testimonials Section - Mobile */
           .testimonials-section {
-            padding: 40px 16px;
+            padding:  40px 16px;
           }
 
           .testimonials-section h2 {
-            font-size: 1.8rem;
+            font-size: clamp(1.5rem, 4vw, 1.8rem);
             margin-bottom: 2rem;
           }
 
@@ -2559,11 +2608,6 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
             padding: 24px;
           }
 
-          .testimonial-text {
-            font-size: 0.95rem;
-          }
-
-          /* Reservation Section - Mobile */
           .reservation-section {
             padding: 40px 16px;
             min-height: auto;
@@ -2582,12 +2626,12 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           }
 
           .reservation-card h3 {
-            font-size: 1.5rem;
+            font-size: clamp(1.3rem, 4vw, 1.5rem);
           }
 
           .form-group input,
           .form-group select {
-            font-size: 16px; /* Evita zoom no iOS */
+            font-size: 16px;
             padding: 14px;
           }
 
@@ -2600,15 +2644,6 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
             padding: 16px;
           }
 
-          .price-line {
-            font-size: 0.95rem;
-          }
-
-          .price-line.total {
-            font-size: 1.2rem;
-          }
-
-          /* Beds Modal - Mobile */
           .beds-modal {
             width: 100%;
             max-width: 100%;
@@ -2618,33 +2653,20 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           }
 
           .beds-grid {
-            grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+            gap: 8px;
           }
 
-          .bed-item {
-            padding: 8px;
+          . bed-item {
+            padding: 6px;
+            min-height: 40px;
+            min-width: 40px;
           }
 
-          .bed-icon {
-            width: 20px;
-            height: 20px;
-          }
-
-          .modal-actions {
-            flex-direction: column;
-            gap: 10px;
-          }
-
-          .modal-actions button {
-            width: 100%;
-          }
-
-          /* Suites Modal - Mobile */
-          .suites-modal {
-            width: 100%;
+          . suites-modal {
+            width:  100%;
             max-width: 100%;
-            margin: 20px;
+            margin:  20px;
             max-height: 90vh;
             overflow-y: auto;
           }
@@ -2654,11 +2676,12 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
             gap: 16px;
           }
 
-          .suite-item {
-            padding: 16px;
+          . suite-item {
+            padding:  16px;
+            min-height:  40px;
+            min-width: 40px;
           }
 
-          /* Lightbox - Mobile */
           .lightbox img {
             max-width: 95%;
             max-height: 85%;
@@ -2671,23 +2694,21 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
             height: 44px;
           }
 
-          .lightbox .carousel-btn {
-            width: 44px;
+          .lightbox . carousel-btn {
+            width:  44px;
             height: 44px;
           }
 
-          /* Footer - Mobile */
           footer {
             padding: 30px 20px;
             font-size: 0.95rem;
           }
 
           footer h3 {
-            font-size: 1.3rem;
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
           }
 
-          /* Modal Geral - Mobile */
-          .modal-content {
+          . modal-content {
             width: 95%;
             max-width: 95%;
             margin: 20px;
@@ -2698,12 +2719,13 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           .modal-close {
             top: 10px;
             right: 10px;
+            min-height: 40px;
+            min-width:  40px;
           }
 
-          /* Ajustes gerais de texto */
           body {
             font-size: 16px;
-            -webkit-text-size-adjust: 100%;
+            -webkit-text-size-adjust:  100%;
           }
 
           h1, h2, h3, h4, h5, h6 {
@@ -2711,30 +2733,23 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
             overflow-wrap: break-word;
           }
 
-          /* Evitar zoom indesejado em inputs no iOS */
-          input, select, textarea {
-            font-size: 16px !important;
-          }
-
-          /* Melhorar toque em botões */
-          button, a, .btn-primary, .btn-secondary, .btn-text {
+          button, a, . btn-primary, .btn-secondary, . btn-text {
             min-height: 44px;
             min-width: 44px;
           }
         }
 
-        /* Landscape Mobile (paisagem) */
         @media (max-width: 768px) and (orientation: landscape) {
           .hero {
             height: 100vh;
           }
 
           .hero h1 {
-            font-size: 1.8rem;
+            font-size: clamp(1.4rem, 3vw, 1.8rem);
           }
 
-          .hero p {
-            font-size: 0.9rem;
+          . hero p {
+            font-size: clamp(0.85rem, 1.5vw, 0.9rem);
           }
 
           .hero-buttons {
@@ -2743,55 +2758,54 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
             gap: 10px;
           }
 
-          .btn-primary, .btn-secondary {
+          . btn-primary, .btn-secondary {
             padding: 12px 20px;
-            font-size: 0.9rem;
+            font-size:  0.9rem;
           }
         }
 
-        /* Extra small devices (menos de 375px) */
         @media (max-width: 375px) {
           .hero h1 {
-            font-size: 1.6rem;
+            font-size: 1.4rem;
           }
 
-          .rooms-section h2,
+          . rooms-section h2,
           .benefits-section h2,
           .testimonials-section h2 {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
           }
 
-          .room-header {
-            font-size: 1.2rem;
-            padding: 16px;
+          . room-header {
+            font-size: 1.1rem;
+            padding: 14px;
           }
 
           .reservation-card {
-            padding: 20px 16px;
+            padding: 18px 14px;
           }
 
-          .reservation-card h3 {
-            font-size: 1.3rem;
+          . reservation-card h3 {
+            font-size: 1.2rem;
           }
         }
       `}</style>
 
       {error && (
-        <div className="alert-banner">
-          ⚠️ {error} O sistema está usando valores padrão.
+        <div className="alert-banner" translate="no">
+          ⚠️ {error} O sistema está usando valores padrão. 
         </div>
       )}
 
       <Hero />
 
-      <section className="rooms-section" id="rooms-section">
+      <section className="rooms-section" id="rooms-section" translate="no">
         <h2>Nossos quartos</h2>
-        <p>Escolha o Hostel perfeito para sua experiência inesquecível!</p>
+        <p>Escolha o Hostel perfeito para sua experiência inesquecível! </p>
         <div className="rooms-grid">
           {roomsData.map((room, idx) => (
             <RoomCard
               key={idx}
-              {...room}
+              {... room}
               onShowMore={() => setShowModal(room.name)}
             />
           ))}
@@ -2801,7 +2815,7 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
       <BenefitsSection />
       <TestimonialsSection />
 
-      <section className="reservation-section" id="reservation-section">
+      <section className="reservation-section" id="reservation-section" translate="no">
         <div className="reservation-cards">
           <ReservationCard title="Nice Place" roomId="jb" sheetsData={sheetsData} />
           <ReservationCard title="Quarto Feminino FreiSa" roomId="ar" sheetsData={sheetsData} />
@@ -2810,7 +2824,7 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
         </div>
       </section>
 
-      <footer>
+      <footer translate="no">
         <h3>FreiSa Hostel</h3>
         <p>Copacabana, Rio de Janeiro - Brasil</p>
         <p>WhatsApp: +55 21 99730-5179</p>
@@ -2818,11 +2832,11 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
       </footer>
 
       {showModal && (
-        <div className="modal-overlay" onClick={() => setShowModal(null)}>
+        <div className="modal-overlay" onClick={() => setShowModal(null)} translate="no">
           <div className="modal-content calendar-modal" onClick={e => e.stopPropagation()}>
             <button className="modal-close" onClick={() => setShowModal(null)}><X /></button>
-            <h2 style={{marginBottom: '1rem'}}>{showModal}</h2>
-            <div style={{lineHeight: 1.8, color: '#666', whiteSpace: 'pre-line'}}>
+            <h2 style={{marginBottom: '1rem', padding: '0 20px'}}>{showModal}</h2>
+            <div style={{lineHeight: 1.8, color: '#666', whiteSpace: 'pre-line', padding: '0 20px', overflowY: 'auto'}}>
               {roomsData.find(r => r.name === showModal)?.fullDescription || ''}
             </div>
           </div>
