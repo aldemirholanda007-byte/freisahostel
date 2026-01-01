@@ -2,19 +2,14 @@ import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { ChevronLeft, ChevronRight, X, Loader } from 'lucide-react';
 
 // ==================== CONFIGURAÇÃO ====================
-// INSTRUÇÕES: Após criar sua planilha no Google Sheets, cole o ID aqui
-// Exemplo: Se o link for https://docs.google.com/spreadsheets/d/1ABC123/edit
-// Cole apenas: 1ABC123
-const SHEET_ID = '1QZewic2mbwaksGyIx5MN7mWTukQdxBOb2yheCydFdCM'; // ← COLE O ID DA SUA PLANILHA AQUI
-
+const SHEET_ID = '1QZewic2mbwaksGyIx5MN7mWTukQdxBOb2yheCydFdCM';
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=`;
 
-// IDs das abas (GIDs) - você vai descobrir esses números depois
 const SHEET_GIDS = {
-  calendar: '0',      // Normalmente a primeira aba é 0
-  pricing: '53054799',       // A segunda aba costuma ser números aleatórios
-  rooms: '109166723',         // Você verá esses números na URL de cada aba
-  beds: '844940838',          // Formato: #gid=123456789
+  calendar: '0',
+  pricing: '53054799',
+  rooms: '109166723',
+  beds: '844940838',
   suites: '1830778583',
   extras: '1216063608'
 };
@@ -52,12 +47,12 @@ const parseCSV = (csvText) => {
 
 // Cache localStorage
 const CACHE_KEY = 'freisa_sheets_cache';
-const CACHE_DURATION = 10 * 60 * 1000; // 10 minutos
+const CACHE_DURATION = 10 * 60 * 1000;
 
 const getCachedData = () => {
   try {
     const cached = localStorage.getItem(CACHE_KEY);
-    if (!cached) return null;
+    if (! cached) return null;
     const { data, timestamp } = JSON.parse(cached);
     if (Date.now() - timestamp > CACHE_DURATION) {
       localStorage.removeItem(CACHE_KEY);
@@ -82,22 +77,20 @@ const setCachedData = (data) => {
 
 // ==================== HOOKS PERSONALIZADOS ====================
 
-// Hook principal: carrega dados do Google Sheets
 const useSheetsData = () => {
   const [data, setData] = useState({
     calendar: [],
-    pricing: [],
+    pricing:  [],
     rooms: [],
     beds: [],
-    suites: [],
+    suites:  [],
     extras: []
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const fetchSheet = async (gid, retryCount = 0) => {
-    // Se SHEET_ID estiver vazio, não tenta carregar
-    if (!SHEET_ID) {
+    if (! SHEET_ID) {
       throw new Error('SHEET_ID não configurado');
     }
     
@@ -118,14 +111,13 @@ const useSheetsData = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      // Se não configurou o SHEET_ID, usa valores padrão silenciosamente
-      if (!SHEET_ID) {
+      if (! SHEET_ID) {
         setData({
           calendar: [],
-          pricing: [],
+          pricing:  [],
           rooms: [
             { room_id: 'jb', name: 'Nice Place', type: 'dorm', max_guests: '14' },
-            { room_id: 'ar', name: 'Quarto Feminino FreiSa', type: 'dorm', max_guests: '14' },
+            { room_id:  'ar', name: 'Quarto Feminino FreiSa', type: 'dorm', max_guests: '14' },
             { room_id: 'q007', name: 'Quarto Misto', type: 'dorm', max_guests: '14' },
             { room_id: 'q777', name: 'Suítes', type: 'suite', max_guests: '3' }
           ],
@@ -136,7 +128,7 @@ const useSheetsData = () => {
             { key: 'late_checkout', price: '30' },
             { key: 'transfer_arrival', price: '150' },
             { key: 'transfer_departure', price: '150' },
-            { key: 'base_price_nice_place', price: '100' },
+            { key:  'base_price_nice_place', price: '100' },
             { key: 'base_price_quarto_feminino', price: '120' },
             { key: 'base_price_quarto_misto', price: '100' },
             { key: 'base_price_suites', price: '300' }
@@ -146,7 +138,6 @@ const useSheetsData = () => {
         return;
       }
 
-      // Tentar carregar do cache primeiro
       const cached = getCachedData();
       if (cached) {
         setData(cached);
@@ -171,15 +162,14 @@ const useSheetsData = () => {
         setData(newData);
         setCachedData(newData);
       } catch (err) {
-        setError('Erro ao conectar com Google Sheets. Verifique a configuração.');
-        // Fallback para valores padrão
+        setError('Erro ao conectar com Google Sheets.  Verifique a configuração.');
         setData({
           calendar: [],
-          pricing: [],
+          pricing:  [],
           rooms: [
             { room_id: 'jb', name: 'Nice Place', type: 'dorm', max_guests: '14' },
             { room_id: 'ar', name: 'Quarto Feminino FreiSa', type: 'dorm', max_guests: '14' },
-            { room_id: 'q007', name: 'Quarto Misto', type: 'dorm', max_guests: '14' },
+            { room_id:  'q007', name: 'Quarto Misto', type: 'dorm', max_guests: '14' },
             { room_id: 'q777', name: 'Suítes', type: 'suite', max_guests: '3' }
           ],
           beds: [],
@@ -206,10 +196,9 @@ const useSheetsData = () => {
   return { data, isLoading, error };
 };
 
-// Hook: verifica disponibilidade
 const useAvailability = (sheetsData, roomId, checkin, checkout) => {
   return useMemo(() => {
-    if (!checkin || !checkout || !sheetsData.calendar.length) {
+    if (!checkin || !checkout || !sheetsData. calendar.length) {
       return { availableBeds: [], availableSuites: [], isAvailable: true };
     }
 
@@ -221,7 +210,6 @@ const useAvailability = (sheetsData, roomId, checkin, checkout) => {
       dates.push(formatLocalDate(d));
     }
 
-    // Verificar se todas as datas estão disponíveis
     const blockedDates = sheetsData.calendar.filter(row => 
       row.room_id === roomId && 
       dates.includes(row.date) && 
@@ -232,11 +220,10 @@ const useAvailability = (sheetsData, roomId, checkin, checkout) => {
       return { availableBeds: [], availableSuites: [], isAvailable: false };
     }
 
-    // Verificar camas disponíveis
     const availableBeds = [];
     if (roomId !== 'q777') {
       for (let i = 1; i <= 7; i++) {
-        ['T', 'B'].forEach(pos => {
+        ['T', 'B']. forEach(pos => {
           const bedId = `C${i}-${pos}`;
           const isBooked = dates.some(date => 
             sheetsData.beds.some(bed => 
@@ -251,10 +238,9 @@ const useAvailability = (sheetsData, roomId, checkin, checkout) => {
       }
     }
 
-    // Verificar suítes disponíveis
     const availableSuites = [];
     if (roomId === 'q777') {
-      ['S1', 'S2', 'S3'].forEach(suiteId => {
+      ['S1', 'S2', 'S3']. forEach(suiteId => {
         const isBooked = dates.some(date =>
           sheetsData.suites.some(suite =>
             suite.date === date &&
@@ -270,11 +256,10 @@ const useAvailability = (sheetsData, roomId, checkin, checkout) => {
   }, [sheetsData, roomId, checkin, checkout]);
 };
 
-// Função utilitária para buscar preço base na aba extras
 const getBasePrice = (sheetsData, roomId) => {
   const priceKeys = {
     jb: 'base_price_nice_place',
-    ar: 'base_price_quarto_feminino',
+    ar:  'base_price_quarto_feminino',
     q007: 'base_price_quarto_misto',
     q777: 'base_price_suites'
   };
@@ -286,7 +271,6 @@ const getBasePrice = (sheetsData, roomId) => {
   return extraRow ? parseFloat(extraRow.price) : 100;
 };
 
-// Hook: calcula preços dinâmicos
 const useDynamicPricing = (sheetsData, roomId, checkin, checkout, guests, selectedBeds, selectedSuites) => {
   return useMemo(() => {
     if (!checkin || !checkout) return { nightlyPrices: [], baseTotal: 0 };
@@ -304,17 +288,15 @@ const useDynamicPricing = (sheetsData, roomId, checkin, checkout, guests, select
 
       const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
-      // Buscar preço específico na planilha
       const priceRow = sheetsData.pricing.find(p => 
         p.room_id === roomId && p.date === dateStr
       );
 
-      // Se não existir preço na aba pricing, usa o preço base da aba extras
       const pricePerUnit = priceRow ? parseFloat(priceRow.price) : getBasePrice(sheetsData, roomId);
 
       let nightTotal;
       if (roomId === 'q777') {
-        nightTotal = pricePerUnit * selectedSuites.length;
+        nightTotal = pricePerUnit * selectedSuites. length;
       } else {
         nightTotal = pricePerUnit * guests;
       }
@@ -329,13 +311,12 @@ const useDynamicPricing = (sheetsData, roomId, checkin, checkout, guests, select
 
 // ==================== COMPONENTES ====================
 
-// Custom Hook para Carrossel
 const useCarousel = (images, interval = 5000) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
-    if (!isPaused && images.length > 1) {
+    if (! isPaused && images.length > 1) {
       const timer = setInterval(() => {
         setCurrentIndex((prev) => (prev + 1) % images.length);
       }, interval);
@@ -350,7 +331,6 @@ const useCarousel = (images, interval = 5000) => {
   return { currentIndex, next, prev, goTo, setIsPaused };
 };
 
-// Hero Component
 const Hero = () => {
   const images = [
     'https://i.imgur.com/JXIOXmJ.jpeg',
@@ -361,7 +341,6 @@ const Hero = () => {
   
   const { currentIndex, next, prev, goTo, setIsPaused } = useCarousel(images, 5000);
 
-  // Scroll handlers to make the entire button area navigate to sections
   const scrollToReservation = () => {
     const el = document.getElementById('reservation-section');
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -370,7 +349,7 @@ const Hero = () => {
 
   const scrollToRooms = () => {
     const el = document.getElementById('rooms-section');
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (el) el.scrollIntoView({ behavior: 'smooth', block:  'start' });
   };
 
   return (
@@ -378,6 +357,7 @@ const Hero = () => {
       className="hero"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
+      translate="no"
     >
       {images.map((img, idx) => (
         <div
@@ -385,15 +365,15 @@ const Hero = () => {
           className="hero-slide"
           style={{
             backgroundImage: `url(${img})`,
-            opacity: idx === currentIndex ? 1 : 0,
-            transition: 'opacity 1.5s ease-in-out'
+            opacity: idx === currentIndex ? 1 :  0,
+            transition: 'opacity 1. 5s ease-in-out'
           }}
         />
       ))}
       <div className="hero-overlay" />
-      <div className="hero-content">
+      <div className="hero-content" translate="no">
         <h1>FreiSa Hostel</h1>
-        <p>Hospitalidade Que Conecta Pessoas.</p>
+        <p>Hospitalidade Que Conecta Pessoas. </p>
         <div className="hero-buttons">
           <button className="btn-primary" onClick={scrollToReservation}>Reserve Aqui</button>
           <button className="btn-secondary" onClick={scrollToRooms}>Conheça Nossas Instalações</button>
@@ -419,14 +399,13 @@ const Hero = () => {
   );
 };
 
-// Room Card Component
 const RoomCard = ({ name, location, beds, bathrooms, images, description, highlights, onShowMore, hasCarousel = true }) => {
   const { currentIndex, next, prev, goTo } = useCarousel(images, 5000);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
   return (
     <>
-      <div className="room-card">
+      <div className="room-card" translate="no">
         <div className="room-header">{name}</div>
         <div className="room-carousel">
           <img 
@@ -471,7 +450,7 @@ const RoomCard = ({ name, location, beds, bathrooms, images, description, highli
             ))}
           </div>
           <div className="divider" />
-          <p className="room-description">{description.substring(0, 150)}...</p>
+          <p className="room-description">{description. substring(0, 150)}...</p>
           <button className="btn-text" onClick={onShowMore}>Mostrar mais</button>
         </div>
       </div>
@@ -482,7 +461,6 @@ const RoomCard = ({ name, location, beds, bathrooms, images, description, highli
   );
 };
 
-// Lightbox Component
 const Lightbox = ({ images, initialIndex, onClose }) => {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
 
@@ -493,7 +471,7 @@ const Lightbox = ({ images, initialIndex, onClose }) => {
   }, [onClose]);
 
   return (
-    <div className="lightbox" onClick={onClose}>
+    <div className="lightbox" onClick={onClose} translate="no">
       <button className="lightbox-close" onClick={onClose}>
         <X size={32} />
       </button>
@@ -518,19 +496,18 @@ const Lightbox = ({ images, initialIndex, onClose }) => {
   );
 };
 
-// Benefits Section
 const BenefitsSection = () => {
   const benefits = [
     { icon: '📍', title: 'Localização Estratégica', text: 'Em Copacabana, perto de tudo que você precisa' },
-    { icon: '💰', title: 'Excelente Custo-Benefício', text: 'Preços justos para uma experiência incrível' },
+    { icon: '💰', title: 'Excelente Custo-Benefício', text:  'Preços justos para uma experiência incrível' },
     { icon: '🔒', title: 'Conforto e Segurança', text: 'Sua estadia tranquila é nossa prioridade' },
     { icon: '🤝', title: 'Ambiente Social', text: 'Conheça viajantes do mundo todo' },
     { icon: '🍳', title: 'Estrutura Prática', text: 'Cozinha compartilhada e áreas comuns' },
-    { icon: '🌳', title: 'Experiência Carioca', text: 'Viva o Rio de Janeiro autenticamente' }
+    { icon:  '🌳', title: 'Experiência Carioca', text: 'Viva o Rio de Janeiro autenticamente' }
   ];
 
   return (
-    <section className="benefits-section">
+    <section className="benefits-section" translate="no">
       <h2>Por Que Escolher o FreiSa Hostel?</h2>
       <div className="benefits-grid">
         {benefits.map((benefit, idx) => (
@@ -545,19 +522,18 @@ const BenefitsSection = () => {
   );
 };
 
-// Testimonials Section
 const TestimonialsSection = () => {
   const testimonials = [
-    { text: 'Fiquei 4 noites em Copacabana. Localização excelente — mercados, padarias e bares na mesma rua; a apenas 2 minutos da praia...', name: 'Hóspede', location: 'Brasil' },
-    { text: 'Minha hospedagem foi super tranquila. A um quarteirão da praia e perto do SESC Copacabana...', name: 'Hóspede', location: 'Internacional' },
-    { text: 'Localização excelente; o proprietário estava disponível sempre que precisei...', name: 'Hóspede', location: 'São Paulo' }
+    { text: 'Fiquei 4 noites em Copacabana.  Localização excelente — mercados, padarias e bares na mesma rua; a apenas 2 minutos da praia... ', name: 'Hóspede', location: 'Brasil' },
+    { text: 'Minha hospedagem foi super tranquila. A um quarteirão da praia e perto do SESC Copacabana... ', name: 'Hóspede', location: 'Internacional' },
+    { text: 'Localização excelente; o proprietário estava disponível sempre que precisei... ', name: 'Hóspede', location: 'São Paulo' }
   ];
 
   return (
-    <section className="testimonials-section">
+    <section className="testimonials-section" translate="no">
       <h2>O Que Dizem Nossos Hóspedes</h2>
       <div className="testimonials-grid">
-        {testimonials.map((testimonial, idx) => (
+        {testimonials. map((testimonial, idx) => (
           <div key={idx} className="testimonial-card">
             <p className="testimonial-text">"{testimonial.text}"</p>
             <div className="testimonial-author">
@@ -571,12 +547,11 @@ const TestimonialsSection = () => {
           </div>
         ))}
       </div>
-      <p className="testimonials-note">Todas as referências foram editadas para clareza.</p>
+      <p className="testimonials-note">Todas as referências foram editadas para clareza. </p>
     </section>
   );
 };
 
-// Calendar Modal (mobile fullscreen fix + dynamic row height + no-translate)
 const CalendarModal = ({ onClose, onSelectDate, sheetsData, roomId, selectedDate }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const today = new Date();
@@ -586,8 +561,7 @@ const CalendarModal = ({ onClose, onSelectDate, sheetsData, roomId, selectedDate
   const headerRef = useRef(null);
   const dayNamesRef = useRef(null);
 
-  // detect mobile (breakpoint: 768px)
-  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth <= 768 : false);
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ?  window.innerWidth <= 768 : false);
   useEffect(() => {
     const onResize = () => setIsMobile(window.innerWidth <= 768);
     window.addEventListener('resize', onResize);
@@ -598,14 +572,13 @@ const CalendarModal = ({ onClose, onSelectDate, sheetsData, roomId, selectedDate
     };
   }, []);
 
-  // When fullscreen on mobile, prevent background scrolling (and iOS overscroll)
   useEffect(() => {
-    if (!isMobile) return;
+    if (! isMobile) return;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    document.documentElement.style.overscrollBehavior = 'none';
+    document. documentElement.style.overscrollBehavior = 'none';
     return () => {
-      document.body.style.overflow = prevOverflow || '';
+      document.body.style. overflow = prevOverflow || '';
       document.documentElement.style.overscrollBehavior = '';
     };
   }, [isMobile]);
@@ -631,9 +604,9 @@ const CalendarModal = ({ onClose, onSelectDate, sheetsData, roomId, selectedDate
   const nextMonth = () => setCurrentDate(p => new Date(p.getFullYear(), p.getMonth() + 1));
 
   const getPrice = (day) => {
-    if (!day) return 0;
+    if (! day) return 0;
     const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
+    const month = currentDate. getMonth();
     const dateStr = formatDateToYYYYMMDD(year, month, day);
     const priceRow = sheetsData.pricing.find(p => p.room_id === roomId && p.date === dateStr);
     return priceRow ? parseFloat(priceRow.price) : getBasePrice(sheetsData, roomId);
@@ -644,11 +617,11 @@ const CalendarModal = ({ onClose, onSelectDate, sheetsData, roomId, selectedDate
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
     const dateStr = formatDateToYYYYMMDD(year, month, day);
-    return sheetsData.calendar.some(row => row.room_id === roomId && row.date === dateStr && (row.status === 'reserved' || row.status === 'blocked'));
+    return sheetsData.calendar.some(row => row.room_id === roomId && row. date === dateStr && (row. status === 'reserved' || row.status === 'blocked'));
   };
 
   const handleDateClick = (day) => {
-    if (!day) return;
+    if (! day) return;
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
     const localDate = createLocalDate(year, month, day);
@@ -656,10 +629,9 @@ const CalendarModal = ({ onClose, onSelectDate, sheetsData, roomId, selectedDate
     const todayLocal = new Date();
     todayLocal.setHours(0,0,0,0);
     const dateStr = formatDateToYYYYMMDD(year, month, day);
-    if (!isReserved(day) && localDate.getTime() >= todayLocal.getTime()) onSelectDate(dateStr);
+    if (! isReserved(day) && localDate.getTime() >= todayLocal.getTime()) onSelectDate(dateStr);
   };
 
-  // compute row height so all weeks fit in viewport (mobile fullscreen)
   useEffect(() => {
     const computeRowHeight = () => {
       if (!modalRef.current || !headerRef.current || !dayNamesRef.current) return;
@@ -686,7 +658,7 @@ const CalendarModal = ({ onClose, onSelectDate, sheetsData, roomId, selectedDate
   const CLOSE_IMG = 'https://i.imgur.com/V3bCqJd.png';
 
   return (
-    <div className="modal-overlay calendar-overlay" onClick={onClose} aria-hidden={false}>
+    <div className="modal-overlay calendar-overlay" onClick={onClose} aria-hidden={false} translate="no">
       <div
         ref={modalRef}
         className={`modal-content calendar-modal ${isMobile ? 'fullscreen' : ''}`}
@@ -714,15 +686,15 @@ const CalendarModal = ({ onClose, onSelectDate, sheetsData, roomId, selectedDate
         <div className="calendar-body" style={{ touchAction: 'manipulation' }}>
           <div className="calendar-grid" role="grid" aria-label="Calendário">
             <div ref={dayNamesRef} className="calendar-day-names" style={{ display: 'contents' }}>
-              {['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].map(d => (
+              {['Dom','Seg','Ter','Qua','Qui','Sex','Sáb']. map(d => (
                 <div key={d} className="calendar-day-name" role="columnheader">{d}</div>
               ))}
             </div>
 
             {days.map((day, idx) => {
-              if (!day) return <div key={idx} className="calendar-day empty" />;
+              if (! day) return <div key={idx} className="calendar-day empty" />;
               const year = currentDate.getFullYear();
-              const month = currentDate.getMonth();
+              const month = currentDate. getMonth();
               const date = createLocalDate(year, month, day); date.setHours(0,0,0,0);
               const dateStr = formatDateToYYYYMMDD(year, month, day);
               const reserved = isReserved(day);
@@ -734,7 +706,7 @@ const CalendarModal = ({ onClose, onSelectDate, sheetsData, roomId, selectedDate
               return (
                 <button
                   key={idx}
-                  className={`calendar-day ${reserved ? 'reserved' : 'available'} ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''} ${isPast ? 'past' : ''}`}
+                  className={`calendar-day ${reserved ? 'reserved' : 'available'} ${isToday ? 'today' :  ''} ${isSelected ? 'selected' : ''} ${isPast ? 'past' : ''}`}
                   onClick={() => handleDateClick(day)}
                   disabled={reserved || isPast}
                   role="gridcell"
@@ -752,7 +724,6 @@ const CalendarModal = ({ onClose, onSelectDate, sheetsData, roomId, selectedDate
   );
 };
 
-// Beds Modal (integrado com Sheets)
 const BedsModal = ({ onClose, onConfirm, maxBeds, selectedBeds = [], sheetsData, roomId, checkin, checkout }) => {
   const [selected, setSelected] = useState(new Set(selectedBeds));
   
@@ -762,7 +733,7 @@ const BedsModal = ({ onClose, onConfirm, maxBeds, selectedBeds = [], sheetsData,
 ];
 
   const toggleBed = (bedId) => {
-    if (!availableBeds.includes(bedId)) return;
+    if (! availableBeds.includes(bedId)) return;
     
     const newSelected = new Set(selected);
     if (newSelected.has(bedId)) {
@@ -781,7 +752,7 @@ const BedsModal = ({ onClose, onConfirm, maxBeds, selectedBeds = [], sheetsData,
   }
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={onClose} translate="no">
       <div className="modal-content beds-modal" onClick={e => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose}><X /></button>
         <h3>Mapa de camas — selecione sua(s) cama(s)</h3>
@@ -796,18 +767,17 @@ const BedsModal = ({ onClose, onConfirm, maxBeds, selectedBeds = [], sheetsData,
                 return (
                   <button
                     key={bed.id}
-                    className={`bed-item ${isSelected ? 'selected' : ''} ${!isAvailable ? 'reserved' : ''}`}
+                    className={`bed-item ${isSelected ? 'selected' : ''} ${! isAvailable ? 'reserved' : ''}`}
                     onClick={() => toggleBed(bed.id)}
-                    disabled={!isAvailable}
+                    disabled={! isAvailable}
                   >
-                    {/* COLE AQUI O LINK DA IMAGEM DO ÍCONE DE CAMA */}
                     <img 
                       src="https://i.imgur.com/qwr5wBb.png" 
                       alt="Ícone de cama" 
                       className="bed-icon"
                     />
                     <svg width="80" height="40" viewBox="0 0 80 40">
-                      <rect width="80" height="40" fill={isSelected ? '#27ae60' : !isAvailable ? '#e74c3c' : '#add8e6'} rx="4" />
+                      <rect width="80" height="40" fill={isSelected ? '#27ae60' : ! isAvailable ? '#e74c3c' : '#add8e6'} rx="4" />
                     </svg>
                     <span>{bed.label}</span>
                   </button>
@@ -828,7 +798,6 @@ const BedsModal = ({ onClose, onConfirm, maxBeds, selectedBeds = [], sheetsData,
                     onClick={() => toggleBed(bed.id)}
                     disabled={!isAvailable}
                   >
-                    {/* COLE AQUI O LINK DA IMAGEM DO ÍCONE DE CAMA */}
                     <img 
                       src="https://i.imgur.com/qwr5wBb.png" 
                       alt="Ícone de cama" 
@@ -860,7 +829,6 @@ const BedsModal = ({ onClose, onConfirm, maxBeds, selectedBeds = [], sheetsData,
   );
 };
 
-// Suites Modal (integrado com Sheets)
 const SuitesModal = ({ onClose, onConfirm, selectedSuites = [], sheetsData, checkin, checkout }) => {
   const [selected, setSelected] = useState(new Set(selectedSuites));
   
@@ -870,7 +838,7 @@ const SuitesModal = ({ onClose, onConfirm, selectedSuites = [], sheetsData, chec
     if (!availableSuites.includes(suiteId)) return;
     
     const newSelected = new Set(selected);
-    if (newSelected.has(suiteId)) {
+    if (newSelected. has(suiteId)) {
       newSelected.delete(suiteId);
     } else if (newSelected.size < 3) {
       newSelected.add(suiteId);
@@ -879,12 +847,12 @@ const SuitesModal = ({ onClose, onConfirm, selectedSuites = [], sheetsData, chec
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={onClose} translate="no">
       <div className="modal-content suites-modal" onClick={e => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose}><X /></button>
         <h3>Selecione sua(s) suíte(s)</h3>
         <div className="suites-grid">
-          {['S1', 'S2', 'S3'].map(suite => {
+          {['S1', 'S2', 'S3']. map(suite => {
             const isAvailable = availableSuites.includes(suite);
             const isSelected = selected.has(suite);
             return (
@@ -894,7 +862,6 @@ const SuitesModal = ({ onClose, onConfirm, selectedSuites = [], sheetsData, chec
                 onClick={() => toggleSuite(suite)}
                 disabled={!isAvailable}
               >
-                {/* COLE AQUI O LINK DA IMAGEM DO ÍCONE DE SUÍTE */}
                 <img 
                   src="https://i.imgur.com/zjJsf7N.jpeg" 
                   alt="Ícone de suíte" 
@@ -917,7 +884,6 @@ const SuitesModal = ({ onClose, onConfirm, selectedSuites = [], sheetsData, chec
   );
 };
 
-// Reservation Card (integrado com Sheets)
 const ReservationCard = ({ title, roomId, sheetsData }) => {
   const [checkin, setCheckin] = useState('');
   const [checkout, setCheckout] = useState('');
@@ -935,7 +901,6 @@ const ReservationCard = ({ title, roomId, sheetsData }) => {
 
   const isSuite = roomId === 'q777';
   
-  // Usar preços dinâmicos da planilha
   const { baseTotal } = useDynamicPricing(
     sheetsData, 
     roomId, 
@@ -946,9 +911,8 @@ const ReservationCard = ({ title, roomId, sheetsData }) => {
     selectedSuites
   );
 
-  // Pegar preços dos extras da planilha
   const getExtraPrice = (key) => {
-    const extra = sheetsData.extras.find(e => e.key === key);
+    const extra = sheetsData.extras. find(e => e.key === key);
     return extra ? parseFloat(extra.price) : 0;
   };
 
@@ -982,13 +946,13 @@ const ReservationCard = ({ title, roomId, sheetsData }) => {
 
     const bedsText = isSuite ? selectedSuites.join(', ') : selectedBeds.join(', ');
     
-    let message = `Olá! Gostaria de solicitar reserva para ${title}.
+    let message = `Olá!  Gostaria de solicitar reserva para ${title}. 
 
 📅 Check-in: ${formatBRDate(checkin)} (entrada às 14:00)
 📅 Check-out: ${formatBRDate(checkout)} (saída até 12:00)
 🌙 Noites: ${nights}
 👥 Hóspedes: ${guests}
-${isSuite ? '🏠' : '🛏️'} ${isSuite ? 'Suítes' : 'Camas'} escolhidas: ${bedsText}
+${isSuite ? '🏠' : '🛏️'} ${isSuite ? 'Suítes' : 'Camas'} escolhidas:  ${bedsText}
 
 💰 Resumo de valores:
 - Valor base: ${formatCurrency(baseTotal)}`;
@@ -1000,7 +964,7 @@ ${isSuite ? '🏠' : '🛏️'} ${isSuite ? 'Suítes' : 'Camas'} escolhidas: ${b
 
     message += `\n\n💵 Total: ${formatCurrency(calculateTotal())}
 
-Obrigado!`;
+Obrigado! `;
 
     const whatsappUrl = `https://wa.me/5521997305179?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
@@ -1008,7 +972,7 @@ Obrigado!`;
 
   return (
     <>
-      <div className="reservation-card">
+      <div className="reservation-card" translate="no">
         <h3>{title}</h3>
         <p className="card-subtitle">Verificar disponibilidade</p>
         
@@ -1016,7 +980,7 @@ Obrigado!`;
           <label>Check-in</label>
           <input
             type="text"
-            value={checkin ? formatBRDate(checkin) : ''}
+            value={checkin ?  formatBRDate(checkin) : ''}
             readOnly
             onClick={() => setShowCalendar('checkin')}
             placeholder="Selecione a data"
@@ -1041,7 +1005,7 @@ Obrigado!`;
         <div className="form-group">
           <label>Hóspedes</label>
           <select value={guests} onChange={(e) => setGuests(Number(e.target.value))}>
-            {[...Array(14)].map((_, i) => (
+            {[... Array(14)].map((_, i) => (
               <option key={i + 1} value={i + 1}>{i + 1}</option>
             ))}
           </select>
@@ -1052,7 +1016,7 @@ Obrigado!`;
           onClick={() => isSuite ? setShowSuitesModal(true) : setShowBedsModal(true)}
         >
           {isSuite ? 'Selecionar suítes' : 'Selecionar camas'}
-          {(isSuite ? selectedSuites : selectedBeds).length > 0 && ` (${(isSuite ? selectedSuites : selectedBeds).length})`}
+          {(isSuite ?  selectedSuites : selectedBeds).length > 0 && ` (${(isSuite ? selectedSuites :  selectedBeds).length})`}
         </button>
 
         <div className="extras-section">
@@ -1093,7 +1057,7 @@ Obrigado!`;
             <div className="price-line">
               <span>Extras</span>
               <span>{formatCurrency(
-                (earlyCheckin ? getExtraPrice('early_checkin') : 0) + 
+                (earlyCheckin ?  getExtraPrice('early_checkin') : 0) + 
                 (lateCheckout ? getExtraPrice('late_checkout') : 0) + 
                 (transferIn ? getExtraPrice('transfer_arrival') : 0) + 
                 (transferOut ? getExtraPrice('transfer_departure') : 0)
@@ -1165,25 +1129,30 @@ export default function App() {
   const [showModal, setShowModal] = useState(null);
   const { data: sheetsData, isLoading, error } = useSheetsData();
 
-  // FIX: Forçar idioma do site para pt-BR permanentemente e bloquear tradução automática do navegador
+  // ✅ SETUP DE META TAGS - CRÍTICO PARA MOBILE E GOOGLE TRANSLATE
   useEffect(() => {
     try {
-      const html = document.documentElement;
+      // 1. Configurar HTML root
+      const html = document. documentElement;
       html.lang = 'pt-BR';
       html.setAttribute('lang', 'pt-BR');
       html.setAttribute('translate', 'no');
       html.classList.add('notranslate');
 
+      // 2. Configurar BODY
       document.body.setAttribute('translate', 'no');
       document.body.classList.add('notranslate');
 
+      // 3. Acessar HEAD
       const head = document.head || document.getElementsByTagName('head')[0];
 
+      // Função auxiliar para meta tags
       const ensureMeta = (attrName, name, content) => {
         let selector;
         if (attrName === 'name') selector = `meta[name="${name}"]`;
         else if (attrName === 'http-equiv') selector = `meta[http-equiv="${name}"]`;
         else selector = `meta[${attrName}="${name}"]`;
+        
         let meta = head.querySelector(selector);
         if (!meta) {
           meta = document.createElement('meta');
@@ -1197,32 +1166,37 @@ export default function App() {
         }
       };
 
-      // Prevent Google Translate and Chrome auto-translate
-      ensureMeta('name', 'google', 'notranslate');
-      // explicit content language
-      ensureMeta('http-equiv', 'Content-Language', 'pt-BR');
-      // hint for other tools
-      // hint for other tools
-      ensureMeta('name', 'locale', 'pt-BR');
-      
-      // ===== COLE AQUI AS LINHAS NOVAS =====
-      // VIEWPORT E RESPONSIVIDADE - CRITICAL
+      // ✅ VIEWPORT - CRÍTICO PARA MOBILE (máximo suporte)
       ensureMeta('name', 'viewport', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover');
       
-      // Otimizações Mobile
+      // ✅ Prevenir Google Translate
+      ensureMeta('name', 'google', 'notranslate');
+      ensureMeta('http-equiv', 'Content-Language', 'pt-BR');
+      ensureMeta('name', 'locale', 'pt-BR');
+      
+      // ✅ Otimizações mobile
       ensureMeta('name', 'apple-mobile-web-app-capable', 'yes');
       ensureMeta('name', 'apple-mobile-web-app-status-bar-style', 'black-translucent');
       ensureMeta('name', 'format-detection', 'telephone=no');
       ensureMeta('name', 'mobile-web-app-capable', 'yes');
-      
-      // Prevenir zoom indesejado no iOS
-      document.addEventListener('gesturestart', function (e) {
-        e.preventDefault();
-      });
-      // ===== FIM DAS LINHAS NOVAS =====
-      
+      ensureMeta('name', 'theme-color', '#ffffff');
+
+      // ✅ Prevenir gestos de zoom
+      const preventGesture = (e) => e.preventDefault();
+      document.addEventListener('gesturestart', preventGesture, false);
+      document.addEventListener('touchmove', (e) => {
+        if (e.scale && e.scale !== 1) {
+          e.preventDefault();
+        }
+      }, { passive: false });
+
+      return () => {
+        document.removeEventListener('gesturestart', preventGesture);
+      };
+
     } catch (e) {
-      // ignore in non-browser environments
+      console.warn('Meta setup error:', e);
+    }
   }, []);
 
   const roomsData = [
@@ -1238,7 +1212,7 @@ export default function App() {
         'https://i.imgur.com/QoRrocG.jpeg'
       ],
       description: 'Quarto exclusivo feminino com ambiente acolhedor e seguro. Perfeito para quem busca conforto e privacidade em Copacabana.',
-      fullDescription: 'Quarto exclusivo feminino com ambiente acolhedor e seguro. Perfeito para quem busca conforto e privacidade em Copacabana. Com 14 camas e 4 banheiros compartilhados, garantimos mais comodidade para nossas hóspedes. O espaço foi pensado para criar um ambiente de sororidade e respeito, onde mulheres viajantes podem se sentir em casa.',
+      fullDescription: 'Quarto exclusivo feminino com ambiente acolhedor e seguro. Perfeito para quem busca conforto e privacidade em Copacabana.  Com 14 camas e 4 banheiros compartilhados, garantimos mais comodidade para nossas hóspedes.  O espaço foi pensado para criar um ambiente de sororidade e respeito, onde mulheres viajantes podem se sentir em casa.',
       highlights: [
         { icon: '🚿', title: 'Banheiro compartilhado', text: 'Banheiro de uso coletivo, sempre limpo e organizado.' },
         { icon: '🛋️', title: 'Áreas compartilhadas', text: 'Espaços compartilhados para convivência.' },
@@ -1254,25 +1228,71 @@ export default function App() {
       images: [
         'https://i.imgur.com/OddkKoI.jpeg'
       ],
-      description: '🏡 Sobre este espaço: Simplicidade, conforto e localização estratégica definem esta hospedagem pensada para quem quer relaxar e aproveitar a cidade com tranquilidade. Um espaço acolhedor, funcional e bem equipado para você se sentir em casa desde o primeiro momento.',
+      description: '🏡 Sobre este espaço:  Simplicidade, conforto e localização estratégica definem esta hospedagem pensada para quem quer relaxar e aproveitar a cidade com tranquilidade.  Um espaço acolhedor, funcional e bem equipado para você se sentir em casa desde o primeiro momento.',
       fullDescription: `Quarto Misto — Detalhes
 
-Simplicidade, conforto e localização estratégica definem esta hospedagem pensada para quem quer relaxar e aproveitar a cidade com tranquilidade. Um espaço acolhedor, funcional e bem equipado para você se sentir em casa desde o primeiro momento.
+Simplicidade, conforto e localização estratégica definem esta hospedagem pensada para quem quer relaxar e aproveitar a cidade com tranquilidade. Um espaço acolhedor, funcional e bem equipado para você se sentir em casa desde o primeiro momento. 
 
 🛁 Banheiro completo
 Banheiro confortável com água quente, secador de cabelo e todos os itens essenciais de higiene, incluindo xampu, sabonete, gel de banho e produtos de limpeza.
 
 🛏️ Quarto e lavanderia
-Ambiente preparado para o descanso, com roupa de cama, local para guardar suas roupas e ferro de passar, garantindo praticidade durante toda a estadia.
+Ambiente preparado para o descanso, com roupa de cama, local para guardar suas roupas e ferro de passar, garantindo praticidade durante toda a estadia. 
 
 📺 Entretenimento e climatização
-Relaxe com TV e aproveite o ar-condicionado, ideal para os dias mais quentes.
+Relaxe com TV e aproveite o ar-condicionado, ideal para os dias mais quentes. 
 
 🔒 Segurança
-Espaço equipado com extintor de incêndio, oferecendo mais tranquilidade durante sua hospedagem.
+Espaço equipado com extintor de incêndio, oferecendo mais tranquilidade durante sua hospedagem. 
 
 🌐 Internet e trabalho
-Wi-Fi rápido, perfeito tanto para lazer quanto para quem precisa trabalhar remotamente.
+Wi-Fi rápido, perfeito tanto para lazer quanto para quem precisa trabalhar remotamente. 
+
+🍳 Cozinha compartilhada e área de refeições
+Cozinha completa para preparar suas próprias refeições com total conforto: 
+• Refrigerador, micro-ondas, fogão e forno
+• Cafeteira, chaleira elétrica, torradeira e liquidificador
+• Louças, talheres, taças de vinho e utensílios básicos
+• Panelas, vasilhas, óleo, sal e pimenta
+
+🧳 Serviços adicionais
+Oferecemos guarda de bagagem, ideal para quem chega cedo ou precisa aproveitar a cidade até mais tarde no dia do check-out.
+
+Um espaço simples, funcional e acolhedor, perfeito para quem busca conforto, praticidade e uma excelente localização. `,
+      highlights: [
+        { icon: '🚿', title: 'Banheiro compartilhado', text: 'Banheiro de uso coletivo, sempre limpo e organizado, disponível para todos os hóspedes.' },
+        { icon: '🛋️', title: 'Áreas compartilhadas', text: 'Espaços compartilhados, com área para circulação e convivência.' },
+        { icon: '🛏️', title: 'Quarto compartilhado', text: 'Dormitórios coletivos, confortáveis e seguros, ideais para quem busca economia e convivência.' }
+      ],
+      hasCarousel: false
+    },
+    {
+      name: 'Suítes',
+      location: 'Quarto em Rio de Janeiro, Brasil',
+      beds: 3,
+      bathrooms: 'Banheiro privativo',
+      images: [
+        'https://i.imgur.com/W9koWkI.jpeg'
+      ],
+      description: 'Simplicidade, conforto e ótima localização definem esta hospedagem ideal para relaxar e curtir a cidade com tranquilidade.  Um espaço acolhedor, funcional e bem equipado para você se sentir em casa desde o início.',
+      fullDescription: `Suítes — Detalhes
+
+Simplicidade, conforto e ótima localização definem esta hospedagem ideal para relaxar e curtir a cidade com tranquilidade. Um espaço acolhedor, funcional e bem equipado para você se sentir em casa desde o início. 
+
+🛁 Banheiro completo
+Água quente, secador de cabelo e itens essenciais de higiene, como xampu, sabonete e gel de banho. 
+
+🛏️ Quarto e lavanderia
+Ambiente confortável para descanso, com roupa de cama, espaço para roupas e ferro de passar. 
+
+📺 Entretenimento e climatização
+TV e ar-condicionado para mais conforto nos dias quentes. 
+
+🔒 Segurança
+Espaço equipado com extintor de incêndio. 
+
+🌐 Internet e trabalho
+Wi-Fi rápido, ideal para lazer ou trabalho remoto. 
 
 🍳 Cozinha compartilhada e área de refeições
 Cozinha completa para preparar suas próprias refeições com total conforto:
