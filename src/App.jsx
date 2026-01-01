@@ -1223,7 +1223,6 @@ export default function App() {
       
     } catch (e) {
       // ignore in non-browser environments
-    }
   }, []);
 
   const roomsData = [
@@ -1336,7 +1335,7 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
       hasCarousel: false
     },
     {
-      name: 'teste',
+      name: 'Nice Place',
       location: 'Quarto em Rio de Janeiro, Brasil',
       beds: 14,
       bathrooms: '2 banheiros compartilhados',
