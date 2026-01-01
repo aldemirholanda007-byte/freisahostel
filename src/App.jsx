@@ -499,7 +499,7 @@ const Lightbox = ({ images, initialIndex, onClose }) => {
 
 const BenefitsSection = () => {
   const benefits = [
-    { icon: '📍', title: 'Localização Estratégica', text: 'Em Copacabana, perto de tudo que você precisa' },
+    { icon: '📍', title: 'teste', text: 'Em Copacabana, perto de tudo que você precisa' },
     { icon: '💰', title: 'Excelente Custo-Benefício', text:  'Preços justos para uma experiência incrível' },
     { icon: '🔒', title: 'Conforto e Segurança', text: 'Sua estadia tranquila é nossa prioridade' },
     { icon: '🤝', title: 'Ambiente Social', text: 'Conheça viajantes do mundo todo' },
