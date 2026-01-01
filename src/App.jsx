@@ -2079,29 +2079,9 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
         }
         .calendar-header h3 { text-align: center; margin: 0; font-size: 1.05rem; font-weight: 600; }
 
-        /* Corpo do calendário */
-        .calendar-body { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; }
-
-        /* Grid de dias */
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; padding: 8px; }
-
         /* Dia-nome */
         .calendar-day-name { text-align: center; font-weight: 600; padding: 6px 4px; color: #666; font-size: 0.85rem; }
-
-        /* Células de dia (sem aspect-ratio; usamos min-height e --calendar-row-height definido via JS) */
-        .calendar-day {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          border: 1.5px solid #e0e0e0;
-          border-radius: 10px;
-          background: #fff;
-          cursor: pointer;
-          padding: 8px;
-          min-height: var(--calendar-row-height, 72px);
-          box-sizing: border-box;
-        }
+        
         .calendar-day.empty { background: transparent; border: none; cursor: default; }
         .calendar-day.available:hover { background: #e8f5e9; transform: scale(1.02); }
         .calendar-day.reserved { background: #e74c3c; color: #fff; cursor: not-allowed; }
@@ -2114,13 +2094,72 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
 
         /* Quando fullscreen: força grid-auto-rows a usar o valor calculado e não permitir scroll interno (garante que todas as linhas fiquem visíveis) */
         .modal-content.calendar-modal.fullscreen .calendar-body { overflow: hidden; }
-        .modal-content.calendar-modal.fullscreen .calendar-grid { grid-auto-rows: var(--calendar-row-height, 72px); }
+        
+        /* ---------- FIX DEFINITIVO DO CALENDÁRIO ---------- */
 
-        /* Desktop/tablet: permitir scroll se necessário */
-        @media (min-width: 769px) {
-          .calendar-body { overflow: auto; max-height: calc(90vh - var(--calendar-header-height, 72px) - 24px); }
-        }
+       /* Corpo do calendário SEM scroll */
+       .calendar-body {
+         flex: 1;
+         overflow: hidden;
+         padding: 8px;
+       }
 
+       /* Grid travado: 7 colunas × 6 linhas */
+       .calendar-grid {
+         display: grid;
+         grid-template-columns: repeat(7, 1fr);
+         grid-template-rows: repeat(6, 1fr);
+         gap: 6px;
+         height: 100%;
+       }
+
+       /* Células de dia */
+       .calendar-day {
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         border: 1.5px solid #e0e0e0;
+         border-radius: 10px;
+         background: #fff;
+         box-sizing: border-box;
+         overflow: hidden;
+       }
+   
+       /* NÚMERO DO DIA — COR E TAMANHO CORRETOS */
+       .day-number {
+         font-size: clamp(12px, 2.5vw, 14px);
+         font-weight: 700;
+         color: #333;
+         line-height: 1;
+       }
+
+       /* PREÇO — MENOR E DISCRETO */
+       .day-price {
+         font-size: 11px;
+         margin-top: 2px;
+         color: #666;
+       }
+
+       /* Estados */
+       .calendar-day.reserved {
+         background: #e74c3c;
+         color: #fff;
+       }
+
+       .calendar-day.selected {
+         background: #27ae60;
+         color: #fff;
+       }
+
+       .calendar-day.today {
+         box-shadow: inset 0 0 0 2px #27ae60;
+       }
+
+       .calendar-day.past {
+         opacity: 0.4;
+         cursor: not-allowed;
+       }
+        
         /* Beds Modal */
         .beds-modal {
           max-width: 900px;
@@ -2345,6 +2384,16 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
 
         /* ========== RESPONSIVIDADE MOBILE ========== */
         @media (max-width: 768px) {
+          
+        /* CALENDÁRIO MOBILE — TRAVADO SEM SCROLL */
+        .calendar-modal {
+          height: 100vh;
+        }
+
+        .calendar-body {
+          height: calc(100vh - 120px);
+        }
+          
           /* Hero Section - Mobile */
           .hero {
             height: 100vh;
