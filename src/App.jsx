@@ -499,7 +499,11 @@ const Lightbox = ({ images, initialIndex, onClose }) => {
 
 const BenefitsSection = () => {
   const benefits = [
+<<<<<<< HEAD
     { icon: '📍', title: 'Localização Estratégica', text: 'Em Copacabana, perto de tudo que você precisa' },
+=======
+    { icon: '📍', title: 'teste', text: 'Em Copacabana, perto de tudo que você precisa' },
+>>>>>>> 6ea09ca423fb7085e01f7d37410a044d5ddd47d5
     { icon: '💰', title: 'Excelente Custo-Benefício', text:  'Preços justos para uma experiência incrível' },
     { icon: '🔒', title: 'Conforto e Segurança', text: 'Sua estadia tranquila é nossa prioridade' },
     { icon: '🤝', title: 'Ambiente Social', text: 'Conheça viajantes do mundo todo' },
@@ -1208,7 +1212,7 @@ export default function App() {
       hasCarousel: true
     },
     {
-      name: 'Quarto Misto',
+      name: 'teste',
       location: 'Quarto em Rio de Janeiro, Brasil',
       beds: 14,
       bathrooms: 'Banheiros compartilhados',
