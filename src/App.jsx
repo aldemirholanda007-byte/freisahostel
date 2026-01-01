@@ -1208,7 +1208,7 @@ export default function App() {
       hasCarousel: true
     },
     {
-      name: 'Quarto Misto',
+      name: 'teste',
       location: 'Quarto em Rio de Janeiro, Brasil',
       beds: 14,
       bathrooms: 'Banheiros compartilhados',
