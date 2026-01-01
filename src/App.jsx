@@ -1,20 +1,16 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+```javascript
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { ChevronLeft, ChevronRight, X, Loader } from 'lucide-react';
 
 // ==================== CONFIGURAÇÃO ====================
-// INSTRUÇÕES: Após criar sua planilha no Google Sheets, cole o ID aqui
-// Exemplo: Se o link for https://docs.google.com/spreadsheets/d/1ABC123/edit
-// Cole apenas: 1ABC123
-const SHEET_ID = '1QZewic2mbwaksGyIx5MN7mWTukQdxBOb2yheCydFdCM'; // ← COLE O ID DA SUA PLANILHA AQUI
-
+const SHEET_ID = '1QZewic2mbwaksGyIx5MN7mWTukQdxBOb2yheCydFdCM';
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=`;
 
-// IDs das abas (GIDs) - você vai descobrir esses números depois
 const SHEET_GIDS = {
-  calendar: '0',      // Normalmente a primeira aba é 0
-  pricing: '53054799',       // A segunda aba costuma ser números aleatórios
-  rooms: '109166723',         // Você verá esses números na URL de cada aba
-  beds: '844940838',          // Formato: #gid=123456789
+  calendar: '0',
+  pricing: '53054799',
+  rooms: '109166723',
+  beds: '844940838',
   suites: '1830778583',
   extras: '1216063608'
 };
@@ -25,11 +21,9 @@ const parseLocalDate = (dateStr) => {
   return new Date(y, m - 1, d);
 };
 
-const formatLocalDate = (date) => {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-};
+const formatLocalDate = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+const formatCurrency = (value) => `R$ ${value.toFixed(2).replace('. ', ',')}`;
 
-const formatCurrency = (value) => `R$ ${value.toFixed(2).replace('.', ',')}`;
 const formatBRDate = (dateStr) => {
   if (!dateStr) return '';
   const d = parseLocalDate(dateStr);
@@ -54,12 +48,12 @@ const parseCSV = (csvText) => {
 
 // Cache localStorage
 const CACHE_KEY = 'freisa_sheets_cache';
-const CACHE_DURATION = 10 * 60 * 1000; // 10 minutos
+const CACHE_DURATION = 10 * 60 * 1000;
 
 const getCachedData = () => {
   try {
     const cached = localStorage.getItem(CACHE_KEY);
-    if (!cached) return null;
+    if (! cached) return null;
     const { data, timestamp } = JSON.parse(cached);
     if (Date.now() - timestamp > CACHE_DURATION) {
       localStorage.removeItem(CACHE_KEY);
@@ -84,22 +78,20 @@ const setCachedData = (data) => {
 
 // ==================== HOOKS PERSONALIZADOS ====================
 
-// Hook principal: carrega dados do Google Sheets
 const useSheetsData = () => {
   const [data, setData] = useState({
     calendar: [],
-    pricing: [],
+    pricing:  [],
     rooms: [],
     beds: [],
-    suites: [],
+    suites:  [],
     extras: []
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const fetchSheet = async (gid, retryCount = 0) => {
-    // Se SHEET_ID estiver vazio, não tenta carregar
-    if (!SHEET_ID) {
+    if (! SHEET_ID) {
       throw new Error('SHEET_ID não configurado');
     }
     
@@ -120,14 +112,13 @@ const useSheetsData = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      // Se não configurou o SHEET_ID, usa valores padrão silenciosamente
-      if (!SHEET_ID) {
+      if (! SHEET_ID) {
         setData({
           calendar: [],
-          pricing: [],
+          pricing:  [],
           rooms: [
             { room_id: 'jb', name: 'Nice Place', type: 'dorm', max_guests: '14' },
-            { room_id: 'ar', name: 'Quarto Feminino FreiSa', type: 'dorm', max_guests: '14' },
+            { room_id:  'ar', name: 'Quarto Feminino FreiSa', type: 'dorm', max_guests: '14' },
             { room_id: 'q007', name: 'Quarto Misto', type: 'dorm', max_guests: '14' },
             { room_id: 'q777', name: 'Suítes', type: 'suite', max_guests: '3' }
           ],
@@ -136,9 +127,9 @@ const useSheetsData = () => {
           extras: [
             { key: 'early_checkin', price: '30' },
             { key: 'late_checkout', price: '30' },
-            { key: 'transfer_arrival', price: '150' },
+            { key:  'transfer_arrival', price: '150' },
             { key: 'transfer_departure', price: '150' },
-            { key: 'base_price_nice_place', price: '100' },
+            { key:  'base_price_nice_place', price: '100' },
             { key: 'base_price_quarto_feminino', price: '120' },
             { key: 'base_price_quarto_misto', price: '100' },
             { key: 'base_price_suites', price: '300' }
@@ -148,7 +139,6 @@ const useSheetsData = () => {
         return;
       }
 
-      // Tentar carregar do cache primeiro
       const cached = getCachedData();
       if (cached) {
         setData(cached);
@@ -164,7 +154,7 @@ const useSheetsData = () => {
           fetchSheet(SHEET_GIDS.calendar),
           fetchSheet(SHEET_GIDS.pricing),
           fetchSheet(SHEET_GIDS.rooms),
-          fetchSheet(SHEET_GIDS.beds),
+          fetchSheet(SHEET_GIDS. beds),
           fetchSheet(SHEET_GIDS.suites),
           fetchSheet(SHEET_GIDS.extras)
         ]);
@@ -173,15 +163,14 @@ const useSheetsData = () => {
         setData(newData);
         setCachedData(newData);
       } catch (err) {
-        setError('Erro ao conectar com Google Sheets. Verifique a configuração.');
-        // Fallback para valores padrão
+        setError('Erro ao conectar com Google Sheets.  Verifique a configuração.');
         setData({
           calendar: [],
-          pricing: [],
+          pricing:  [],
           rooms: [
             { room_id: 'jb', name: 'Nice Place', type: 'dorm', max_guests: '14' },
             { room_id: 'ar', name: 'Quarto Feminino FreiSa', type: 'dorm', max_guests: '14' },
-            { room_id: 'q007', name: 'Quarto Misto', type: 'dorm', max_guests: '14' },
+            { room_id:  'q007', name: 'Quarto Misto', type: 'dorm', max_guests: '14' },
             { room_id: 'q777', name: 'Suítes', type: 'suite', max_guests: '3' }
           ],
           beds: [],
@@ -208,10 +197,9 @@ const useSheetsData = () => {
   return { data, isLoading, error };
 };
 
-// Hook: verifica disponibilidade
 const useAvailability = (sheetsData, roomId, checkin, checkout) => {
   return useMemo(() => {
-    if (!checkin || !checkout || !sheetsData.calendar.length) {
+    if (!checkin || !checkout || !sheetsData. calendar.length) {
       return { availableBeds: [], availableSuites: [], isAvailable: true };
     }
 
@@ -219,11 +207,10 @@ const useAvailability = (sheetsData, roomId, checkin, checkout) => {
     const end = parseLocalDate(checkout);
     const dates = [];
 
-    for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
+    for (let d = new Date(start); d < end; d.setDate(d. getDate() + 1)) {
       dates.push(formatLocalDate(d));
     }
 
-    // Verificar se todas as datas estão disponíveis
     const blockedDates = sheetsData.calendar.filter(row => 
       row.room_id === roomId && 
       dates.includes(row.date) && 
@@ -234,11 +221,10 @@ const useAvailability = (sheetsData, roomId, checkin, checkout) => {
       return { availableBeds: [], availableSuites: [], isAvailable: false };
     }
 
-    // Verificar camas disponíveis
     const availableBeds = [];
     if (roomId !== 'q777') {
       for (let i = 1; i <= 7; i++) {
-        ['T', 'B'].forEach(pos => {
+        ['T', 'B']. forEach(pos => {
           const bedId = `C${i}-${pos}`;
           const isBooked = dates.some(date => 
             sheetsData.beds.some(bed => 
@@ -253,10 +239,9 @@ const useAvailability = (sheetsData, roomId, checkin, checkout) => {
       }
     }
 
-    // Verificar suítes disponíveis
     const availableSuites = [];
     if (roomId === 'q777') {
-      ['S1', 'S2', 'S3'].forEach(suiteId => {
+      ['S1', 'S2', 'S3']. forEach(suiteId => {
         const isBooked = dates.some(date =>
           sheetsData.suites.some(suite =>
             suite.date === date &&
@@ -272,11 +257,10 @@ const useAvailability = (sheetsData, roomId, checkin, checkout) => {
   }, [sheetsData, roomId, checkin, checkout]);
 };
 
-// Função utilitária para buscar preço base na aba extras
 const getBasePrice = (sheetsData, roomId) => {
   const priceKeys = {
     jb: 'base_price_nice_place',
-    ar: 'base_price_quarto_feminino',
+    ar:  'base_price_quarto_feminino',
     q007: 'base_price_quarto_misto',
     q777: 'base_price_suites'
   };
@@ -288,7 +272,6 @@ const getBasePrice = (sheetsData, roomId) => {
   return extraRow ? parseFloat(extraRow.price) : 100;
 };
 
-// Hook: calcula preços dinâmicos
 const useDynamicPricing = (sheetsData, roomId, checkin, checkout, guests, selectedBeds, selectedSuites) => {
   return useMemo(() => {
     if (!checkin || !checkout) return { nightlyPrices: [], baseTotal: 0 };
@@ -306,12 +289,10 @@ const useDynamicPricing = (sheetsData, roomId, checkin, checkout, guests, select
 
       const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
-      // Buscar preço específico na planilha
       const priceRow = sheetsData.pricing.find(p => 
         p.room_id === roomId && p.date === dateStr
       );
 
-      // Se não existir preço na aba pricing, usa o preço base da aba extras
       const pricePerUnit = priceRow ? parseFloat(priceRow.price) : getBasePrice(sheetsData, roomId);
 
       let nightTotal;
@@ -331,7 +312,6 @@ const useDynamicPricing = (sheetsData, roomId, checkin, checkout, guests, select
 
 // ==================== COMPONENTES ====================
 
-// Custom Hook para Carrossel
 const useCarousel = (images, interval = 5000) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -352,7 +332,6 @@ const useCarousel = (images, interval = 5000) => {
   return { currentIndex, next, prev, goTo, setIsPaused };
 };
 
-// Hero Component
 const Hero = () => {
   const images = [
     'https://i.imgur.com/JXIOXmJ.jpeg',
@@ -363,7 +342,6 @@ const Hero = () => {
   
   const { currentIndex, next, prev, goTo, setIsPaused } = useCarousel(images, 5000);
 
-  // Scroll handlers to make the entire button area navigate to sections
   const scrollToReservation = () => {
     const el = document.getElementById('reservation-section');
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -380,6 +358,7 @@ const Hero = () => {
       className="hero"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
+      translate="no"
     >
       {images.map((img, idx) => (
         <div
@@ -387,15 +366,15 @@ const Hero = () => {
           className="hero-slide"
           style={{
             backgroundImage: `url(${img})`,
-            opacity: idx === currentIndex ? 1 : 0,
-            transition: 'opacity 1.5s ease-in-out'
+            opacity: idx === currentIndex ? 1 :  0,
+            transition: 'opacity 1. 5s ease-in-out'
           }}
         />
       ))}
       <div className="hero-overlay" />
-      <div className="hero-content">
+      <div className="hero-content" translate="no">
         <h1>FreiSa Hostel</h1>
-        <p>Hospitalidade Que Conecta Pessoas.</p>
+        <p>Hospitalidade Que Conecta Pessoas. </p>
         <div className="hero-buttons">
           <button className="btn-primary" onClick={scrollToReservation}>Reserve Aqui</button>
           <button className="btn-secondary" onClick={scrollToRooms}>Conheça Nossas Instalações</button>
@@ -421,14 +400,13 @@ const Hero = () => {
   );
 };
 
-// Room Card Component
 const RoomCard = ({ name, location, beds, bathrooms, images, description, highlights, onShowMore, hasCarousel = true }) => {
   const { currentIndex, next, prev, goTo } = useCarousel(images, 5000);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
   return (
     <>
-      <div className="room-card">
+      <div className="room-card" translate="no">
         <div className="room-header">{name}</div>
         <div className="room-carousel">
           <img 
@@ -473,7 +451,7 @@ const RoomCard = ({ name, location, beds, bathrooms, images, description, highli
             ))}
           </div>
           <div className="divider" />
-          <p className="room-description">{description.substring(0, 150)}...</p>
+          <p className="room-description">{description. substring(0, 150)}...</p>
           <button className="btn-text" onClick={onShowMore}>Mostrar mais</button>
         </div>
       </div>
@@ -484,7 +462,6 @@ const RoomCard = ({ name, location, beds, bathrooms, images, description, highli
   );
 };
 
-// Lightbox Component
 const Lightbox = ({ images, initialIndex, onClose }) => {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
 
@@ -495,7 +472,7 @@ const Lightbox = ({ images, initialIndex, onClose }) => {
   }, [onClose]);
 
   return (
-    <div className="lightbox" onClick={onClose}>
+    <div className="lightbox" onClick={onClose} translate="no">
       <button className="lightbox-close" onClick={onClose}>
         <X size={32} />
       </button>
@@ -520,19 +497,18 @@ const Lightbox = ({ images, initialIndex, onClose }) => {
   );
 };
 
-// Benefits Section
 const BenefitsSection = () => {
   const benefits = [
     { icon: '📍', title: 'Localização Estratégica', text: 'Em Copacabana, perto de tudo que você precisa' },
-    { icon: '💰', title: 'Excelente Custo-Benefício', text: 'Preços justos para uma experiência incrível' },
+    { icon: '💰', title: 'Excelente Custo-Benefício', text:  'Preços justos para uma experiência incrível' },
     { icon: '🔒', title: 'Conforto e Segurança', text: 'Sua estadia tranquila é nossa prioridade' },
     { icon: '🤝', title: 'Ambiente Social', text: 'Conheça viajantes do mundo todo' },
     { icon: '🍳', title: 'Estrutura Prática', text: 'Cozinha compartilhada e áreas comuns' },
-    { icon: '🌳', title: 'Experiência Carioca', text: 'Viva o Rio de Janeiro autenticamente' }
+    { icon:  '🌳', title: 'Experiência Carioca', text: 'Viva o Rio de Janeiro autenticamente' }
   ];
 
   return (
-    <section className="benefits-section">
+    <section className="benefits-section" translate="no">
       <h2>Por Que Escolher o FreiSa Hostel?</h2>
       <div className="benefits-grid">
         {benefits.map((benefit, idx) => (
@@ -547,19 +523,18 @@ const BenefitsSection = () => {
   );
 };
 
-// Testimonials Section
 const TestimonialsSection = () => {
   const testimonials = [
-    { text: 'Fiquei 4 noites em Copacabana. Localização excelente — mercados, padarias e bares na mesma rua; a apenas 2 minutos da praia...', name: 'Hóspede', location: 'Brasil' },
-    { text: 'Minha hospedagem foi super tranquila. A um quarteirão da praia e perto do SESC Copacabana...', name: 'Hóspede', location: 'Internacional' },
-    { text: 'Localização excelente; o proprietário estava disponível sempre que precisei...', name: 'Hóspede', location: 'São Paulo' }
+    { text: 'Fiquei 4 noites em Copacabana.  Localização excelente — mercados, padarias e bares na mesma rua; a apenas 2 minutos da praia... ', name: 'Hóspede', location: 'Brasil' },
+    { text: 'Minha hospedagem foi super tranquila.  A um quarteirão da praia e perto do SESC Copacabana... ', name: 'Hóspede', location: 'Internacional' },
+    { text: 'Localização excelente; o proprietário estava disponível sempre que precisei... ', name: 'Hóspede', location: 'São Paulo' }
   ];
 
   return (
-    <section className="testimonials-section">
+    <section className="testimonials-section" translate="no">
       <h2>O Que Dizem Nossos Hóspedes</h2>
       <div className="testimonials-grid">
-        {testimonials.map((testimonial, idx) => (
+        {testimonials. map((testimonial, idx) => (
           <div key={idx} className="testimonial-card">
             <p className="testimonial-text">"{testimonial.text}"</p>
             <div className="testimonial-author">
@@ -573,60 +548,69 @@ const TestimonialsSection = () => {
           </div>
         ))}
       </div>
-      <p className="testimonials-note">Todas as referências foram editadas para clareza.</p>
+      <p className="testimonials-note">Todas as referências foram editadas para clareza. </p>
     </section>
   );
 };
 
-// Calendar Modal (integrado com Sheets)
-// NOTE: uses image icons for prev/next/close (kept from previous change)
 const CalendarModal = ({ onClose, onSelectDate, sheetsData, roomId, selectedDate }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const createLocalDate = (year, month0Based, day) => {
-    return new Date(year, month0Based, day);
-  };
+  const modalRef = useRef(null);
+  const headerRef = useRef(null);
+  const dayNamesRef = useRef(null);
 
-  const formatDateToYYYYMMDD = (year, month0Based, day) => {
-    const yyyy = year;
-    const mm = String(month0Based + 1).padStart(2, '0');
-    const dd = String(day).padStart(2, '0');
-    return `${yyyy}-${mm}-${dd}`;
-  };
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ?  window.innerWidth <= 768 : false);
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', onResize);
+    window.addEventListener('orientationchange', onResize);
+    return () => {
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('orientationchange', onResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (! isMobile) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document. documentElement.style.overscrollBehavior = 'none';
+    return () => {
+      document.body.style. overflow = prevOverflow || '';
+      document.documentElement.style.overscrollBehavior = '';
+    };
+  }, [isMobile]);
+
+  const createLocalDate = (year, month0Based, day) => new Date(year, month0Based, day);
+  const formatDateToYYYYMMDD = (year, month0Based, day) => `${year}-${String(month0Based + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
 
   const getDaysInMonth = (date) => {
     const year = date.getFullYear();
     const month = date.getMonth();
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    
     const days = [];
     for (let i = 0; i < firstDay; i++) days.push(null);
     for (let i = 1; i <= daysInMonth; i++) days.push(i);
-    
     return days;
   };
 
   const days = getDaysInMonth(currentDate);
-  const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+  const monthNames = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
-  const prevMonth = () => setCurrentDate(prev => new Date(prev.getFullYear(), prev.getMonth() - 1));
-  const nextMonth = () => setCurrentDate(prev => new Date(prev.getFullYear(), prev.getMonth() + 1));
+  const prevMonth = () => setCurrentDate(p => new Date(p.getFullYear(), p.getMonth() - 1));
+  const nextMonth = () => setCurrentDate(p => new Date(p.getFullYear(), p.getMonth() + 1));
 
   const getPrice = (day) => {
-    if (!day) return 0;
+    if (! day) return 0;
     const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
+    const month = currentDate. getMonth();
     const dateStr = formatDateToYYYYMMDD(year, month, day);
-
-    const priceRow = sheetsData.pricing.find(p => 
-      p.room_id === roomId && p.date === dateStr
-    );
-    
-    if (priceRow) return parseFloat(priceRow.price);
-    return getBasePrice(sheetsData, roomId);
+    const priceRow = sheetsData.pricing.find(p => p.room_id === roomId && p. date === dateStr);
+    return priceRow ? parseFloat(priceRow.price) : getBasePrice(sheetsData, roomId);
   };
 
   const isReserved = (day) => {
@@ -634,39 +618,58 @@ const CalendarModal = ({ onClose, onSelectDate, sheetsData, roomId, selectedDate
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
     const dateStr = formatDateToYYYYMMDD(year, month, day);
-
-    return sheetsData.calendar.some(row =>
-      row.room_id === roomId &&
-      row.date === dateStr &&
-      (row.status === 'reserved' || row.status === 'blocked')
-    );
+    return sheetsData.calendar.some(row => row.room_id === roomId && row. date === dateStr && (row. status === 'reserved' || row.status === 'blocked'));
   };
 
   const handleDateClick = (day) => {
-    if (!day) return;
+    if (! day) return;
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
     const localDate = createLocalDate(year, month, day);
     localDate.setHours(0,0,0,0);
-
     const todayLocal = new Date();
     todayLocal.setHours(0,0,0,0);
-
     const dateStr = formatDateToYYYYMMDD(year, month, day);
-    
-    if (!isReserved(day) && localDate.getTime() >= todayLocal.getTime()) {
-      onSelectDate(dateStr);
-    }
+    if (! isReserved(day) && localDate.getTime() >= todayLocal.getTime()) onSelectDate(dateStr);
   };
+
+  useEffect(() => {
+    const computeRowHeight = () => {
+      if (!modalRef.current || !headerRef.current || !dayNamesRef.current) return;
+      const vh = window.innerHeight;
+      const headerRect = headerRef.current.getBoundingClientRect();
+      const dayNamesRect = dayNamesRef.current.getBoundingClientRect();
+      const available = Math.max(200, vh - headerRect.height - dayNamesRect.height - 24);
+      const weeks = Math.ceil(days.length / 7);
+      const rowHeight = Math.floor(available / weeks);
+      modalRef.current.style.setProperty('--calendar-row-height', `${rowHeight}px`);
+      modalRef.current.style.setProperty('--calendar-header-height', `${Math.ceil(headerRect.height)}px`);
+    };
+    computeRowHeight();
+    window.addEventListener('resize', computeRowHeight);
+    window.addEventListener('orientationchange', computeRowHeight);
+    return () => {
+      window.removeEventListener('resize', computeRowHeight);
+      window.removeEventListener('orientationchange', computeRowHeight);
+    };
+  }, [days, isMobile, currentDate]);
 
   const PREV_IMG = 'https://i.imgur.com/C9GoK9i.png';
   const NEXT_IMG = 'https://i.imgur.com/xcG2Lyf.png';
   const CLOSE_IMG = 'https://i.imgur.com/V3bCqJd.png';
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content calendar-modal" onClick={e => e.stopPropagation()}>
-        <div className="calendar-header">
+    <div className="modal-overlay calendar-overlay" onClick={onClose} aria-hidden={false} translate="no">
+      <div
+        ref={modalRef}
+        className={`modal-content calendar-modal ${isMobile ? 'fullscreen' : ''}`}
+        onClick={e => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Calendário de seleção de datas"
+        translate="no"
+      >
+        <div className="calendar-header" ref={headerRef}>
           <button onClick={prevMonth} aria-label="Mês anterior">
             <img src={PREV_IMG} alt="Anterior" className="calendar-icon" />
           </button>
@@ -681,57 +684,57 @@ const CalendarModal = ({ onClose, onSelectDate, sheetsData, roomId, selectedDate
           </div>
         </div>
 
-        <div className="calendar-grid">
-          {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map(day => (
-            <div key={day} className="calendar-day-name">{day}</div>
-          ))}
-          {days.map((day, idx) => {
-            if (!day) {
-              return <div key={idx} className="calendar-day empty" />;
-            }
+        <div className="calendar-body" style={{ touchAction: 'manipulation' }}>
+          <div className="calendar-grid" role="grid" aria-label="Calendário">
+            <div ref={dayNamesRef} className="calendar-day-names" style={{ display: 'contents' }}>
+              {['Dom','Seg','Ter','Qua','Qui','Sex','Sáb']. map(d => (
+                <div key={d} className="calendar-day-name" role="columnheader">{d}</div>
+              ))}
+            </div>
 
-            const year = currentDate.getFullYear();
-            const month = currentDate.getMonth();
-            const date = createLocalDate(year, month, day);
-            date.setHours(0,0,0,0);
-            const dateStr = formatDateToYYYYMMDD(year, month, day);
+            {days.map((day, idx) => {
+              if (! day) return <div key={idx} className="calendar-day empty" />;
+              const year = currentDate.getFullYear();
+              const month = currentDate. getMonth();
+              const date = createLocalDate(year, month, day); date.setHours(0,0,0,0);
+              const dateStr = formatDateToYYYYMMDD(year, month, day);
+              const reserved = isReserved(day);
+              const todayLocal = new Date(); todayLocal.setHours(0,0,0,0);
+              const isPast = date.getTime() < todayLocal.getTime();
+              const isToday = date.getTime() === todayLocal.getTime();
+              const isSelected = selectedDate && dateStr === selectedDate;
 
-            const reserved = isReserved(day);
-            const todayLocal = new Date();
-            todayLocal.setHours(0,0,0,0);
-            const isPast = date.getTime() < todayLocal.getTime();
-            const isToday = date.getTime() === todayLocal.getTime();
-            const isSelected = selectedDate && dateStr === selectedDate;
-
-            return (
-              <button
-                key={idx}
-                className={`calendar-day ${reserved ? 'reserved' : 'available'} ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''} ${isPast ? 'past' : ''}`}
-                onClick={() => handleDateClick(day)}
-                disabled={reserved || isPast}
-              >
-                <div className="day-number">{day}</div>
-                <div className="day-price">{formatCurrency(getPrice(day))}</div>
-              </button>
-            );
-          })}
+              return (
+                <button
+                  key={idx}
+                  className={`calendar-day ${reserved ? 'reserved' : 'available'} ${isToday ? 'today' :  ''} ${isSelected ? 'selected' : ''} ${isPast ? 'past' : ''}`}
+                  onClick={() => handleDateClick(day)}
+                  disabled={reserved || isPast}
+                  role="gridcell"
+                  aria-disabled={reserved || isPast}
+                >
+                  <div className="day-number">{day}</div>
+                  <div className="day-price">{formatCurrency(getPrice(day))}</div>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-// Beds Modal (integrado com Sheets)
 const BedsModal = ({ onClose, onConfirm, maxBeds, selectedBeds = [], sheetsData, roomId, checkin, checkout }) => {
   const [selected, setSelected] = useState(new Set(selectedBeds));
   
   const availableBeds = [
-  "C1-T","C1-B","C2-T","C2-B","C3-T","C3-B",
-  "C4-T","C4-B","C5-T","C5-B","C6-T","C6-B","C7-T","C7-B"
-];
+    "C1-T","C1-B","C2-T","C2-B","C3-T","C3-B",
+    "C4-T","C4-B","C5-T","C5-B","C6-T","C6-B","C7-T","C7-B"
+  ];
 
   const toggleBed = (bedId) => {
-    if (!availableBeds.includes(bedId)) return;
+    if (! availableBeds.includes(bedId)) return;
     
     const newSelected = new Set(selected);
     if (newSelected.has(bedId)) {
@@ -750,7 +753,7 @@ const BedsModal = ({ onClose, onConfirm, maxBeds, selectedBeds = [], sheetsData,
   }
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={onClose} translate="no">
       <div className="modal-content beds-modal" onClick={e => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose}><X /></button>
         <h3>Mapa de camas — selecione sua(s) cama(s)</h3>
@@ -765,18 +768,17 @@ const BedsModal = ({ onClose, onConfirm, maxBeds, selectedBeds = [], sheetsData,
                 return (
                   <button
                     key={bed.id}
-                    className={`bed-item ${isSelected ? 'selected' : ''} ${!isAvailable ? 'reserved' : ''}`}
+                    className={`bed-item ${isSelected ? 'selected' : ''} ${! isAvailable ? 'reserved' : ''}`}
                     onClick={() => toggleBed(bed.id)}
-                    disabled={!isAvailable}
+                    disabled={! isAvailable}
                   >
-                    {/* COLE AQUI O LINK DA IMAGEM DO ÍCONE DE CAMA */}
                     <img 
                       src="https://i.imgur.com/qwr5wBb.png" 
                       alt="Ícone de cama" 
                       className="bed-icon"
                     />
                     <svg width="80" height="40" viewBox="0 0 80 40">
-                      <rect width="80" height="40" fill={isSelected ? '#27ae60' : !isAvailable ? '#e74c3c' : '#add8e6'} rx="4" />
+                      <rect width="80" height="40" fill={isSelected ? '#27ae60' : ! isAvailable ? '#e74c3c' : '#add8e6'} rx="4" />
                     </svg>
                     <span>{bed.label}</span>
                   </button>
@@ -797,7 +799,6 @@ const BedsModal = ({ onClose, onConfirm, maxBeds, selectedBeds = [], sheetsData,
                     onClick={() => toggleBed(bed.id)}
                     disabled={!isAvailable}
                   >
-                    {/* COLE AQUI O LINK DA IMAGEM DO ÍCONE DE CAMA */}
                     <img 
                       src="https://i.imgur.com/qwr5wBb.png" 
                       alt="Ícone de cama" 
@@ -829,7 +830,6 @@ const BedsModal = ({ onClose, onConfirm, maxBeds, selectedBeds = [], sheetsData,
   );
 };
 
-// Suites Modal (integrado com Sheets)
 const SuitesModal = ({ onClose, onConfirm, selectedSuites = [], sheetsData, checkin, checkout }) => {
   const [selected, setSelected] = useState(new Set(selectedSuites));
   
@@ -848,12 +848,12 @@ const SuitesModal = ({ onClose, onConfirm, selectedSuites = [], sheetsData, chec
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={onClose} translate="no">
       <div className="modal-content suites-modal" onClick={e => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose}><X /></button>
         <h3>Selecione sua(s) suíte(s)</h3>
         <div className="suites-grid">
-          {['S1', 'S2', 'S3'].map(suite => {
+          {['S1', 'S2', 'S3']. map(suite => {
             const isAvailable = availableSuites.includes(suite);
             const isSelected = selected.has(suite);
             return (
@@ -863,7 +863,6 @@ const SuitesModal = ({ onClose, onConfirm, selectedSuites = [], sheetsData, chec
                 onClick={() => toggleSuite(suite)}
                 disabled={!isAvailable}
               >
-                {/* COLE AQUI O LINK DA IMAGEM DO ÍCONE DE SUÍTE */}
                 <img 
                   src="https://i.imgur.com/zjJsf7N.jpeg" 
                   alt="Ícone de suíte" 
@@ -886,7 +885,6 @@ const SuitesModal = ({ onClose, onConfirm, selectedSuites = [], sheetsData, chec
   );
 };
 
-// Reservation Card (integrado com Sheets)
 const ReservationCard = ({ title, roomId, sheetsData }) => {
   const [checkin, setCheckin] = useState('');
   const [checkout, setCheckout] = useState('');
@@ -904,7 +902,6 @@ const ReservationCard = ({ title, roomId, sheetsData }) => {
 
   const isSuite = roomId === 'q777';
   
-  // Usar preços dinâmicos da planilha
   const { baseTotal } = useDynamicPricing(
     sheetsData, 
     roomId, 
@@ -915,9 +912,8 @@ const ReservationCard = ({ title, roomId, sheetsData }) => {
     selectedSuites
   );
 
-  // Pegar preços dos extras da planilha
   const getExtraPrice = (key) => {
-    const extra = sheetsData.extras.find(e => e.key === key);
+    const extra = sheetsData.extras. find(e => e.key === key);
     return extra ? parseFloat(extra.price) : 0;
   };
 
@@ -951,13 +947,13 @@ const ReservationCard = ({ title, roomId, sheetsData }) => {
 
     const bedsText = isSuite ? selectedSuites.join(', ') : selectedBeds.join(', ');
     
-    let message = `Olá! Gostaria de solicitar reserva para ${title}.
+    let message = `Olá! Gostaria de solicitar reserva para ${title}. 
 
-📅 Check-in: ${formatBRDate(checkin)} (entrada às 14:00)
+📅 Check-in: ${formatBRDate(checkin)} (entrada às 14: 00)
 📅 Check-out: ${formatBRDate(checkout)} (saída até 12:00)
 🌙 Noites: ${nights}
 👥 Hóspedes: ${guests}
-${isSuite ? '🏠' : '🛏️'} ${isSuite ? 'Suítes' : 'Camas'} escolhidas: ${bedsText}
+${isSuite ? '🏠' : '🛏️'} ${isSuite ? 'Suítes' : 'Camas'} escolhidas:  ${bedsText}
 
 💰 Resumo de valores:
 - Valor base: ${formatCurrency(baseTotal)}`;
@@ -969,7 +965,7 @@ ${isSuite ? '🏠' : '🛏️'} ${isSuite ? 'Suítes' : 'Camas'} escolhidas: ${b
 
     message += `\n\n💵 Total: ${formatCurrency(calculateTotal())}
 
-Obrigado!`;
+Obrigado! `;
 
     const whatsappUrl = `https://wa.me/5521997305179?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
@@ -977,7 +973,7 @@ Obrigado!`;
 
   return (
     <>
-      <div className="reservation-card">
+      <div className="reservation-card" translate="no">
         <h3>{title}</h3>
         <p className="card-subtitle">Verificar disponibilidade</p>
         
@@ -985,7 +981,7 @@ Obrigado!`;
           <label>Check-in</label>
           <input
             type="text"
-            value={checkin ? formatBRDate(checkin) : ''}
+            value={checkin ?  formatBRDate(checkin) : ''}
             readOnly
             onClick={() => setShowCalendar('checkin')}
             placeholder="Selecione a data"
@@ -1010,7 +1006,7 @@ Obrigado!`;
         <div className="form-group">
           <label>Hóspedes</label>
           <select value={guests} onChange={(e) => setGuests(Number(e.target.value))}>
-            {[...Array(14)].map((_, i) => (
+            {[... Array(14)].map((_, i) => (
               <option key={i + 1} value={i + 1}>{i + 1}</option>
             ))}
           </select>
@@ -1021,7 +1017,7 @@ Obrigado!`;
           onClick={() => isSuite ? setShowSuitesModal(true) : setShowBedsModal(true)}
         >
           {isSuite ? 'Selecionar suítes' : 'Selecionar camas'}
-          {(isSuite ? selectedSuites : selectedBeds).length > 0 && ` (${(isSuite ? selectedSuites : selectedBeds).length})`}
+          {(isSuite ?  selectedSuites :  selectedBeds).length > 0 && ` (${(isSuite ? selectedSuites : selectedBeds).length})`}
         </button>
 
         <div className="extras-section">
@@ -1062,7 +1058,7 @@ Obrigado!`;
             <div className="price-line">
               <span>Extras</span>
               <span>{formatCurrency(
-                (earlyCheckin ? getExtraPrice('early_checkin') : 0) + 
+                (earlyCheckin ?  getExtraPrice('early_checkin') : 0) + 
                 (lateCheckout ? getExtraPrice('late_checkout') : 0) + 
                 (transferIn ? getExtraPrice('transfer_arrival') : 0) + 
                 (transferOut ? getExtraPrice('transfer_departure') : 0)
@@ -1134,6 +1130,62 @@ export default function App() {
   const [showModal, setShowModal] = useState(null);
   const { data: sheetsData, isLoading, error } = useSheetsData();
 
+  // ✅ FIX COMPLETO: Meta tags + Google Translate + Mobile Responsivity
+  useEffect(() => {
+    try {
+      const html = document.documentElement;
+      html.lang = 'pt-BR';
+      html.setAttribute('lang', 'pt-BR');
+      html.setAttribute('translate', 'no');
+      html.classList.add('notranslate');
+
+      document.body.setAttribute('translate', 'no');
+      document.body.classList.add('notranslate');
+
+      const head = document.head || document.getElementsByTagName('head')[0];
+
+      const ensureMeta = (attrName, name, content) => {
+        let selector;
+        if (attrName === 'name') selector = `meta[name="${name}"]`;
+        else if (attrName === 'http-equiv') selector = `meta[http-equiv="${name}"]`;
+        else selector = `meta[${attrName}="${name}"]`;
+        let meta = head.querySelector(selector);
+        if (!meta) {
+          meta = document.createElement('meta');
+          if (attrName === 'name') meta.setAttribute('name', name);
+          else if (attrName === 'http-equiv') meta.setAttribute('http-equiv', name);
+          else meta.setAttribute(attrName, name);
+          meta.setAttribute('content', content);
+          head.appendChild(meta);
+        } else {
+          meta.setAttribute('content', content);
+        }
+      };
+
+      // ✅ VIEWPORT - CRITICAL FOR MOBILE
+      ensureMeta('name', 'viewport', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover');
+      
+      // ✅ Prevenir Google Translate
+      ensureMeta('name', 'google', 'notranslate');
+      ensureMeta('http-equiv', 'Content-Language', 'pt-BR');
+      ensureMeta('name', 'locale', 'pt-BR');
+      
+      // ✅ Mobile optimizations
+      ensureMeta('name', 'apple-mobile-web-app-capable', 'yes');
+      ensureMeta('name', 'apple-mobile-web-app-status-bar-style', 'black-translucent');
+      ensureMeta('name', 'format-detection', 'telephone=no');
+      ensureMeta('name', 'mobile-web-app-capable', 'yes');
+      
+      // ✅ Prevenir zoom indesejado
+      document.addEventListener('gesturestart', function (e) {
+        e.preventDefault();
+      });
+      
+    } catch (e) {
+      console.warn('Meta setup error:', e);
+    }
+  }, []);
+
   const roomsData = [
     {
       name: 'Quarto Feminino FreiSa',
@@ -1147,7 +1199,7 @@ export default function App() {
         'https://i.imgur.com/QoRrocG.jpeg'
       ],
       description: 'Quarto exclusivo feminino com ambiente acolhedor e seguro. Perfeito para quem busca conforto e privacidade em Copacabana.',
-      fullDescription: 'Quarto exclusivo feminino com ambiente acolhedor e seguro. Perfeito para quem busca conforto e privacidade em Copacabana. Com 14 camas e 4 banheiros compartilhados, garantimos mais comodidade para nossas hóspedes. O espaço foi pensado para criar um ambiente de sororidade e respeito, onde mulheres viajantes podem se sentir em casa.',
+      fullDescription: 'Quarto exclusivo feminino com ambiente acolhedor e seguro. Perfeito para quem busca conforto e privacidade em Copacabana.  Com 14 camas e 4 banheiros compartilhados, garantimos mais comodidade para nossas hóspedes.  O espaço foi pensado para criar um ambiente de sororidade e respeito, onde mulheres viajantes podem se sentir em casa.',
       highlights: [
         { icon: '🚿', title: 'Banheiro compartilhado', text: 'Banheiro de uso coletivo, sempre limpo e organizado.' },
         { icon: '🛋️', title: 'Áreas compartilhadas', text: 'Espaços compartilhados para convivência.' },
@@ -1163,28 +1215,28 @@ export default function App() {
       images: [
         'https://i.imgur.com/OddkKoI.jpeg'
       ],
-      description: '🏡 Sobre este espaço: Simplicidade, conforto e localização estratégica definem esta hospedagem pensada para quem quer relaxar e aproveitar a cidade com tranquilidade. Um espaço acolhedor, funcional e bem equipado para você se sentir em casa desde o primeiro momento.',
+      description: '🏡 Sobre este espaço:  Simplicidade, conforto e localização estratégica definem esta hospedagem pensada para quem quer relaxar e aproveitar a cidade com tranquilidade.  Um espaço acolhedor, funcional e bem equipado para você se sentir em casa desde o primeiro momento.',
       fullDescription: `Quarto Misto — Detalhes
 
-Simplicidade, conforto e localização estratégica definem esta hospedagem pensada para quem quer relaxar e aproveitar a cidade com tranquilidade. Um espaço acolhedor, funcional e bem equipado para você se sentir em casa desde o primeiro momento.
+Simplicidade, conforto e localização estratégica definem esta hospedagem pensada para quem quer relaxar e aproveitar a cidade com tranquilidade. Um espaço acolhedor, funcional e bem equipado para você se sentir em casa desde o primeiro momento. 
 
 🛁 Banheiro completo
 Banheiro confortável com água quente, secador de cabelo e todos os itens essenciais de higiene, incluindo xampu, sabonete, gel de banho e produtos de limpeza.
 
 🛏️ Quarto e lavanderia
-Ambiente preparado para o descanso, com roupa de cama, local para guardar suas roupas e ferro de passar, garantindo praticidade durante toda a estadia.
+Ambiente preparado para o descanso, com roupa de cama, local para guardar suas roupas e ferro de passar, garantindo praticidade durante toda a estadia. 
 
 📺 Entretenimento e climatização
-Relaxe com TV e aproveite o ar-condicionado, ideal para os dias mais quentes.
+Relaxe com TV e aproveite o ar-condicionado, ideal para os dias mais quentes. 
 
 🔒 Segurança
-Espaço equipado com extintor de incêndio, oferecendo mais tranquilidade durante sua hospedagem.
+Espaço equipado com extintor de incêndio, oferecendo mais tranquilidade durante sua hospedagem. 
 
 🌐 Internet e trabalho
-Wi-Fi rápido, perfeito tanto para lazer quanto para quem precisa trabalhar remotamente.
+Wi-Fi rápido, perfeito tanto para lazer quanto para quem precisa trabalhar remotamente. 
 
 🍳 Cozinha compartilhada e área de refeições
-Cozinha completa para preparar suas próprias refeições com total conforto:
+Cozinha completa para preparar suas próprias refeições com total conforto: 
 • Refrigerador, micro-ondas, fogão e forno
 • Cafeteira, chaleira elétrica, torradeira e liquidificador
 • Louças, talheres, taças de vinho e utensílios básicos
@@ -1193,10 +1245,10 @@ Cozinha completa para preparar suas próprias refeições com total conforto:
 🧳 Serviços adicionais
 Oferecemos guarda de bagagem, ideal para quem chega cedo ou precisa aproveitar a cidade até mais tarde no dia do check-out.
 
-Um espaço simples, funcional e acolhedor, perfeito para quem busca conforto, praticidade e uma excelente localização.`,
+Um espaço simples, funcional e acolhedor, perfeito para quem busca conforto, praticidade e uma excelente localização. `,
       highlights: [
         { icon: '🚿', title: 'Banheiro compartilhado', text: 'Banheiro de uso coletivo, sempre limpo e organizado, disponível para todos os hóspedes.' },
-        { icon: '🛋️', title: 'Áreas compartilhadas', text: 'Espaços compartilhados, com área para circulação e convivência.' },
+        { icon: '🛋️', title: 'Áreas compartilhadas', text:  'Espaços compartilhados, com área para circulação e convivência.' },
         { icon: '🛏️', title: 'Quarto compartilhado', text: 'Dormitórios coletivos, confortáveis e seguros, ideais para quem busca economia e convivência.' }
       ],
       hasCarousel: false
@@ -1209,28 +1261,28 @@ Um espaço simples, funcional e acolhedor, perfeito para quem busca conforto, pr
       images: [
         'https://i.imgur.com/W9koWkI.jpeg'
       ],
-      description: 'Simplicidade, conforto e ótima localização definem esta hospedagem ideal para relaxar e curtir a cidade com tranquilidade. Um espaço acolhedor, funcional e bem equipado para você se sentir em casa desde o início.',
+      description: 'Simplicidade, conforto e ótima localização definem esta hospedagem ideal para relaxar e curtir a cidade com tranquilidade.  Um espaço acolhedor, funcional e bem equipado para você se sentir em casa desde o início.',
       fullDescription: `Suítes — Detalhes
 
-Simplicidade, conforto e ótima localização definem esta hospedagem ideal para relaxar e curtir a cidade com tranquilidade. Um espaço acolhedor, funcional e bem equipado para você se sentir em casa desde o início.
+Simplicidade, conforto e ótima localização definem esta hospedagem ideal para relaxar e curtir a cidade com tranquilidade. Um espaço acolhedor, funcional e bem equipado para você se sentir em casa desde o início. 
 
 🛁 Banheiro completo
-Água quente, secador de cabelo e itens essenciais de higiene, como xampu, sabonete e gel de banho.
+Água quente, secador de cabelo e itens essenciais de higiene, como xampu, sabonete e gel de banho. 
 
 🛏️ Quarto e lavanderia
-Ambiente confortável para descanso, com roupa de cama, espaço para roupas e ferro de passar.
+Ambiente confortável para descanso, com roupa de cama, espaço para roupas e ferro de passar. 
 
 📺 Entretenimento e climatização
-TV e ar-condicionado para mais conforto nos dias quentes.
+TV e ar-condicionado para mais conforto nos dias quentes. 
 
 🔒 Segurança
-Espaço equipado com extintor de incêndio.
+Espaço equipado com extintor de incêndio. 
 
 🌐 Internet e trabalho
-Wi-Fi rápido, ideal para lazer ou trabalho remoto.
+Wi-Fi rápido, ideal para lazer ou trabalho remoto. 
 
 🍳 Cozinha compartilhada e área de refeições
-Cozinha completa com eletrodomésticos, utensílios, louças e itens básicos para preparo de refeições.
+Cozinha completa com eletrodomésticos, utensílios, louças e itens básicos para preparo de refeições. 
 
 🧳 Serviços adicionais
 Guarda de bagagem disponível para maior comodidade no check-in e check-out.
@@ -1248,11 +1300,11 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
       location: 'Quarto em Rio de Janeiro, Brasil',
       beds: 14,
       bathrooms: '2 banheiros compartilhados',
-      images: [
+      images:  [
         'https://i.imgur.com/OddkKoI.jpeg',
         'https://i.imgur.com/W9koWkI.jpeg',
         'https://i.imgur.com/yEaKK3Q.jpeg',
-        'https://i.imgur.com/HUd2mEN.jpeg'
+        'https://i.imgur.com/HUd2
       ],
       description: 'Espaço confortável e bem localizado em Copacabana. Ideal para quem quer aproveitar o melhor do Rio de Janeiro.',
       fullDescription: 'Espaço confortável e bem localizado em Copacabana. Ideal para quem quer aproveitar o melhor do Rio de Janeiro. Com 14 camas distribuídas em beliches e 2 banheiros compartilhados, oferecemos um ambiente social e acolhedor. A localização estratégica permite acesso rápido à praia, mercados, restaurantes e transporte público.',
@@ -1267,7 +1319,7 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
 
   if (isLoading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', flexDirection: 'column', gap: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems:  'center', height: '100vh', flexDirection: 'column', gap: '20px' }}>
         <Loader size={48} className="spinner" />
         <p>Carregando dados do hostel...</p>
       </div>
@@ -1275,7 +1327,7 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
   }
 
   return (
-    <div className="app">
+    <div className="app" lang="pt-BR" translate="no">
       <style>{`
         * {
           margin: 0;
@@ -1283,17 +1335,56 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           box-sizing: border-box;
         }
 
+        html {
+          height: 100%;
+          -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+          -webkit-touch-callout: none;
+        }
+
+        html, body {
+          height: 100%;
+          overflow-x: hidden;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+
         body {
           font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
           line-height: 1.6;
           color: #333;
+          -webkit-text-size-adjust: 100%;
+          position: relative;
+          min-height: 100vh;
         }
 
         .app {
           overflow-x: hidden;
+          width: 100%;
+          position: relative;
         }
 
-        .spinner {
+        /* Prevenir zoom indesejado em inputs no iOS */
+        input, select, textarea, button {
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+          font-size: 16px ! important;
+        }
+
+        /* Suavizar scrolling */
+        * {
+          scroll-behavior: smooth;
+          -webkit-overflow-scrolling:  touch;
+        }
+
+        /* Garantir que imagens sejam responsivas */
+        img {
+          max-width: 100%;
+          height: auto;
+          display: block;
+        }
+
+        . spinner {
           animation: spin 1s linear infinite;
         }
 
@@ -1302,10 +1393,11 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           to { transform: rotate(360deg); }
         }
 
-        /* Hero Section */
+        /* HERO */
         .hero {
           position: relative;
           height: 100vh;
+          height: 100dvh;
           overflow: hidden;
         }
 
@@ -1314,7 +1406,7 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           top: 0;
           left: 0;
           width: 100%;
-          height: 100%;
+          height:  100%;
           background-size: cover;
           background-position: center;
         }
@@ -1324,7 +1416,7 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           top: 0;
           left: 0;
           width: 100%;
-          height: 100%;
+          height:  100%;
           background: rgba(0, 0, 0, 0.5);
           z-index: 1;
         }
@@ -1349,14 +1441,18 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
         }
 
         .hero h1 {
-          font-size: 3.5rem;
+          font-size: clamp(2rem, 5vw, 3. 5rem);
           font-weight: 300;
           margin-bottom: 1rem;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .hero p {
-          font-size: 1.3rem;
+          font-size: clamp(1rem, 3vw, 1.3rem);
           margin-bottom: 2rem;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .hero-buttons {
@@ -1370,9 +1466,13 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           padding: 15px 30px;
           border: none;
           border-radius: 8px;
-          font-size: 1rem;
+          font-size:  1rem;
           cursor: pointer;
           transition: all 0.3s;
+          min-height: 44px;
+          min-width: 44px;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .btn-primary {
@@ -1380,9 +1480,9 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           color: white;
         }
 
-        .btn-primary:hover:not(:disabled) {
+        .btn-primary:hover: not(:disabled) {
           background: #1e8449;
-          transform: translateY(-3px);
+          transform:  translateY(-3px);
           box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
@@ -1393,7 +1493,7 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
 
         .btn-secondary:hover {
           background: #f0f0f0;
-          transform: translateY(-3px);
+          transform:  translateY(-3px);
           box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
@@ -1407,12 +1507,14 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           color: white;
           width: 50px;
           height: 50px;
-          border-radius: 50%;
+          border-radius:  50%;
           cursor: pointer;
           display: flex;
           align-items: center;
           justify-content: center;
           transition: background 0.3s;
+          min-height: 44px;
+          min-width: 44px;
         }
 
         .carousel-btn:hover {
@@ -1423,8 +1525,8 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           left: 20px;
         }
 
-        .carousel-next {
-          right: 20px;
+        . carousel-next {
+          right:  20px;
         }
 
         .carousel-indicators {
@@ -1440,36 +1542,43 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
         .indicator {
           width: 12px;
           height: 12px;
-          border-radius: 50%;
+          border-radius:  50%;
           background: rgba(255,255,255,0.5);
           border: none;
           cursor: pointer;
           transition: background 0.3s;
+          min-height: 44px;
+          min-width:  44px;
         }
 
         .indicator.active {
           background: white;
         }
 
-        /* Rooms Section */
+        /* ROOMS */
         .rooms-section {
-          padding: 80px 20px;
-          max-width: 1200px;
+          padding: clamp(40px, 8vw, 80px) clamp(16px, 5vw, 20px);
+          max-width:  1200px;
           margin: 0 auto;
+          width: 100%;
         }
 
         .rooms-section h2 {
-          font-size: 2.5rem;
+          font-size: clamp(1.5rem, 5vw, 2.5rem);
           font-weight: 300;
           text-align: center;
           margin-bottom: 1rem;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .rooms-section > p {
           text-align: center;
-          font-size: 1.1rem;
+          font-size: clamp(1rem, 3vw, 1.1rem);
           color: #666;
           margin-bottom: 3rem;
+          word-wrap:  break-word;
+          overflow-wrap: break-word;
         }
 
         .rooms-grid {
@@ -1492,15 +1601,17 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
 
         .room-header {
           background: #f8f9fa;
-          padding: 30px;
-          font-size: 1.5rem;
+          padding: clamp(20px, 5vw, 30px);
+          font-size: clamp(1.2rem, 4vw, 1.5rem);
           font-weight: 600;
           border-bottom: 1px solid #e0e0e0;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .room-carousel {
           position: relative;
-          height: 500px;
+          height: clamp(250px, 60vw, 500px);
           overflow: hidden;
         }
 
@@ -1515,31 +1626,37 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           height: 40px;
         }
 
-        .room-carousel .carousel-indicators {
+        .room-carousel . carousel-indicators {
           bottom: 15px;
         }
 
         .room-info {
-          padding: 30px;
+          padding: clamp(20px, 5vw, 30px);
         }
 
         .room-location {
           color: #666;
           margin-bottom: 0.5rem;
+          font-size: clamp(0.9rem, 2vw, 1rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .room-specs {
           color: #666;
           margin-bottom: 1rem;
+          font-size: clamp(0.9rem, 2vw, 1rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
-        .divider {
+        . divider {
           height: 1px;
           background: #e0e0e0;
           margin: 1.5rem 0;
         }
 
-        .room-highlights {
+        . room-highlights {
           display: flex;
           flex-direction: column;
           gap: 1rem;
@@ -1552,13 +1669,16 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
         }
 
         .highlight-icon {
-          font-size: 1.5rem;
+          font-size: clamp(1.3rem, 3vw, 1.5rem);
           flex-shrink: 0;
         }
 
         .room-description {
           color: #666;
-          margin: 1rem 0;
+          margin:  1rem 0;
+          font-size: clamp(0.95rem, 2vw, 1rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .btn-text {
@@ -1568,19 +1688,22 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           text-decoration: underline;
           cursor: pointer;
           font-size: 1rem;
+          min-height: 44px;
         }
 
-        /* Benefits Section */
+        /* BENEFITS */
         .benefits-section {
-          padding: 80px 20px;
+          padding: clamp(40px, 8vw, 80px) clamp(16px, 5vw, 20px);
           background: #f8f9fa;
         }
 
         .benefits-section h2 {
-          font-size: 2.5rem;
+          font-size: clamp(1.5rem, 5vw, 2.5rem);
           font-weight: 300;
           text-align: center;
           margin-bottom: 3rem;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .benefits-grid {
@@ -1591,9 +1714,9 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           gap: 30px;
         }
 
-        .benefit-card {
-          background: white;
-          padding: 30px;
+        . benefit-card {
+          background:  white;
+          padding: clamp(20px, 5vw, 30px);
           border-radius: 10px;
           box-shadow: 0 5px 20px rgba(0,0,0,0.1);
           text-align: center;
@@ -1606,43 +1729,51 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
         }
 
         .benefit-icon {
-          font-size: 3rem;
+          font-size: clamp(2. 5rem, 5vw, 3rem);
           margin-bottom: 1rem;
         }
 
         .benefit-card h3 {
-          font-size: 1.2rem;
-          margin-bottom: 0.5rem;
+          font-size: clamp(1rem, 3vw, 1.2rem);
+          margin-bottom:  0.5rem;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .benefit-card p {
-          color: #666;
+          color:  #666;
+          font-size: clamp(0.9rem, 2vw, 1rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
-        /* Testimonials Section */
+        /* TESTIMONIALS */
         .testimonials-section {
-          padding: 80px 20px;
+          padding: clamp(40px, 8vw, 80px) clamp(16px, 5vw, 20px);
           max-width: 1200px;
           margin: 0 auto;
+          width: 100%;
         }
 
         .testimonials-section h2 {
-          font-size: 2.5rem;
+          font-size:  clamp(1.5rem, 5vw, 2.5rem);
           font-weight: 300;
           text-align: center;
           margin-bottom: 3rem;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
-        .testimonials-grid {
+        . testimonials-grid {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
           gap: 30px;
           margin-bottom: 2rem;
         }
 
-        .testimonial-card {
+        . testimonial-card {
           background: white;
-          padding: 30px;
+          padding: clamp(20px, 5vw, 30px);
           border-radius: 10px;
           box-shadow: 0 5px 20px rgba(0,0,0,0.1);
         }
@@ -1651,35 +1782,43 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           font-style: italic;
           color: #666;
           margin-bottom: 1.5rem;
+          font-size: clamp(0.95rem, 2vw, 1rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .testimonial-author {
           display: flex;
           align-items: center;
           gap: 15px;
-          margin-bottom: 1rem;
+          margin-bottom:  1rem;
         }
 
         .author-avatar {
           width: 50px;
           height: 50px;
-          border-radius: 50%;
+          border-radius:  50%;
           background: #27ae60;
           color: white;
           display: flex;
           align-items: center;
           justify-content: center;
           font-size: 1.5rem;
-          font-weight: bold;
+          font-weight:  bold;
+          flex-shrink: 0;
         }
 
         .author-name {
           font-weight: 600;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .author-location {
-          font-size: 0.9rem;
+          font-size: clamp(0.85rem, 2vw, 0.9rem);
           color: #666;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .testimonial-stars {
@@ -1687,17 +1826,19 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           font-size: 1.2rem;
         }
 
-        .testimonials-note {
+        . testimonials-note {
           text-align: center;
           color: #666;
-          font-size: 0.9rem;
+          font-size: clamp(0.85rem, 2vw, 0.9rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
-        /* Reservation Section */
+        /* RESERVATION */
         .reservation-section {
           min-height: 95vh;
           background: linear-gradient(135deg, #fa6866 0%, #fd8365 100%);
-          padding: 80px 20px;
+          padding:  clamp(40px, 8vw, 80px) clamp(16px, 5vw, 20px);
           display: flex;
           justify-content: center;
           align-items: center;
@@ -1707,7 +1848,7 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           display: flex;
           flex-wrap: wrap;
           gap: 30px;
-          justify-content: center;
+          justify-content:  center;
           max-width: 1800px;
         }
 
@@ -1715,24 +1856,28 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           background: rgba(255,255,255,0.15);
           backdrop-filter: blur(10px);
           border-radius: 24px;
-          padding: 32px 28px;
+          padding: clamp(20px, 5vw, 32px);
           flex: 1 1 320px;
           max-width: 420px;
           color: white;
         }
 
         .reservation-card h3 {
-          font-size: 1.8rem;
-          margin-bottom: 0.5rem;
+          font-size: clamp(1.3rem, 4vw, 1.8rem);
+          margin-bottom:  0.5rem;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .card-subtitle {
-          font-size: 0.9rem;
+          font-size: clamp(0.85rem, 2vw, 0.9rem);
           opacity: 0.9;
           margin-bottom: 1.5rem;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
-        .form-group {
+        . form-group {
           margin-bottom: 1.5rem;
         }
 
@@ -1740,21 +1885,25 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           display: block;
           margin-bottom: 0.5rem;
           font-weight: 500;
+          font-size: clamp(0.9rem, 2vw, 1rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .form-group input,
         .form-group select {
           width: 100%;
-          padding: 12px;
+          padding: 14px;
           border: 2px solid rgba(255,255,255,0.3);
           border-radius: 8px;
           background: rgba(255,255,255,0.1);
           color: white;
-          font-size: 1rem;
+          font-size: 16px;
           cursor: pointer;
+          box-sizing: border-box;
         }
 
-        .form-group input::placeholder {
+        .form-group input:: placeholder {
           color: rgba(255,255,255,0.7);
         }
 
@@ -1770,6 +1919,9 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           text-align: center;
           margin-bottom: 1.5rem;
           animation: pulse 2s infinite;
+          font-size: clamp(0.9rem, 2vw, 1rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         @keyframes pulse {
@@ -1777,17 +1929,20 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           50% { opacity: 0.8; }
         }
 
-        .btn-select {
+        . btn-select {
           width: 100%;
-          padding: 12px;
+          padding: 14px;
           background: rgba(255,255,255,0.2);
           border: 2px solid rgba(255,255,255,0.3);
           border-radius: 8px;
           color: white;
-          font-size: 1rem;
+          font-size: 16px;
           cursor: pointer;
           margin-bottom: 1.5rem;
           transition: all 0.3s;
+          min-height: 44px;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .btn-select:hover {
@@ -1802,6 +1957,9 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
         .extras-section h4,
         .transfer-section h4 {
           margin-bottom: 1rem;
+          font-size: clamp(1rem, 2vw, 1.1rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .checkbox-label {
@@ -1810,12 +1968,17 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           gap: 10px;
           margin-bottom: 0.5rem;
           cursor: pointer;
+          font-size: clamp(0.9rem, 2vw, 1rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
-        .checkbox-label input[type="checkbox"] {
+        . checkbox-label input[type="checkbox"] {
           width: 20px;
           height: 20px;
           cursor: pointer;
+          min-height: 44px;
+          min-width: 44px;
         }
 
         .transfer-btn {
@@ -1828,43 +1991,56 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           color: white;
           cursor: pointer;
           transition: all 0.3s;
+          min-height: 44px;
+          font-size: clamp(0.9rem, 2vw, 1rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
-        .transfer-btn.active {
+        .transfer-btn. active {
           background: linear-gradient(135deg, #3498db, #2d8fcb);
           animation: pulse 2s infinite;
         }
 
-        .price-summary {
+        . price-summary {
           background: rgba(255,255,255,0.1);
           padding: 20px;
-          border-radius: 8px;
+          border-radius:  8px;
           margin-bottom: 1.5rem;
         }
 
         .price-summary h4 {
           margin-bottom: 1rem;
+          font-size: clamp(1rem, 2vw, 1.1rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .price-line {
           display: flex;
           justify-content: space-between;
           margin-bottom: 0.5rem;
+          font-size: clamp(0.9rem, 2vw, 1rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
-        .price-line.total {
-          font-size: 1.3rem;
+        .price-line. total {
+          font-size: clamp(1.1rem, 3vw, 1.3rem);
           font-weight: bold;
           padding-top: 0.5rem;
           border-top: 1px solid rgba(255,255,255,0.3);
           margin-top: 0.5rem;
         }
 
-        .btn-reserve {
+        . btn-reserve {
           width: 100%;
-          padding: 15px;
-          font-size: 1.1rem;
+          padding: 16px;
+          font-size: clamp(0.95rem, 2vw, 1.1rem);
           font-weight: 600;
+          min-height: 44px;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .btn-reserve:disabled {
@@ -1872,189 +2048,124 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           cursor: not-allowed;
         }
 
-        .error-message {
+        . error-message {
           color: #ff6b6b;
           background: rgba(255,255,255,0.9);
           padding: 10px;
-          border-radius: 5px;
-          margin-bottom: 1rem;
+          border-radius:  5px;
+          margin-bottom:  1rem;
           text-align: center;
+          font-size: clamp(0.9rem, 2vw, 1rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
-        .whatsapp-note {
+        . whatsapp-note {
           text-align: center;
-          font-size: 0.9rem;
+          font-size: clamp(0.85rem, 2vw, 0.9rem);
           opacity: 0.8;
           margin-top: 1rem;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
-        /* Modals */
+        /* MODALS */
         .modal-overlay {
           position: fixed;
           top: 0;
           left: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(0,0,0,0.8);
+          width: 100vw;
+          height: 100vh;
+          background: rgba(0,0,0,0.6);
           display: flex;
-          justify-content: center;
           align-items: center;
-          z-index: 1000;
-          padding: 20px;
+          justify-content: center;
+          z-index: 2147483646;
+        }
+
+        .calendar-overlay {
+          z-index: 2147483647;
         }
 
         .modal-content {
-          background: white;
-          border-radius: 16px;
-          padding: 30px;
-          max-width: 90%;
+          background: #fff;
+          border-radius: 12px;
+          width: min(920px, 96%);
+          max-width: 920px;
           max-height: 90vh;
-          overflow-y: auto;
+          overflow:  hidden;
+          display: flex;
+          flex-direction: column;
           position: relative;
+        }
+
+        .modal-content. fullscreen {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          max-width: 100vw;
+          max-height:  100vh;
+          margin: 0;
+          border-radius: 0;
+          padding: env(safe-area-inset-top) 12px env(safe-area-inset-bottom) 12px;
+          z-index: 2147483647;
+          box-shadow: none;
+          overflow: hidden;
         }
 
         .modal-close {
           position: absolute;
-          top: 15px;
-          right: 15px;
+          top: 10px;
+          right: 10px;
           background: none;
           border: none;
           cursor: pointer;
-          color: #666;
-          transition: color 0.3s;
+          z-index: 10;
+          min-height: 44px;
+          min-width: 44px;
         }
 
-        .modal-close:hover {
-          color: #000;
-        }
-
-        /* ================= CALENDAR MODAL ================= */
-
-        .calendar-modal {
-          max-width: 600px;
-        }
-
-        /* HEADER */
-        /* increase right column width to make space for both arrow and close button */
+        /* CALENDAR */
         .calendar-header {
           display: grid;
-          grid-template-columns: 48px 1fr 120px;
-          align-items: center;
-          margin-bottom: 1.2rem;
+          grid-template-columns: 44px 1fr auto;
           gap: 8px;
+          align-items: center;
+          padding: 8px 4px;
+          background: #fff;
+          position: sticky;
+          top: 0;
+          z-index:  10;
         }
 
         .calendar-header h3 {
           text-align: center;
           margin: 0;
-          font-size: 1.2rem;
+          font-size: clamp(1rem, 3vw, 1.05rem);
           font-weight: 600;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
-        /* header-right groups next arrow and close button so they don't overlap modal-close absolute */
-        .calendar-header .header-right {
-          display: flex;
-          gap: 8px;
-          justify-content: flex-end;
-          align-items: center;
-        }
-
-        /* override modal-close positioning when used inside header */
-        .calendar-header .modal-close {
-          position: static;
-          top: auto;
-          right: auto;
-          width: 40px;
-          height: 40px;
-          background: #f3f3f3;
-          border-radius: 8px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        /* Calendar icon images sizing */
-        .calendar-header .calendar-icon {
-          width: 22px;
-          height: 22px;
-          object-fit: contain;
-          display: block;
-        }
-
-        .calendar-header .calendar-icon.close-icon {
-          width: 20px;
-          height: 20px;
-        }
-
-        /* BOTÕES DAS SETAS */
-        .calendar-header button {
-          width: 40px;
-          height: 40px;
-
-          display: flex;
-          align-items: center;
-          justify-content: center;
-
-          background: #f3f3f3;
-          border: none;
-          border-radius: 10px;
-
-          cursor: pointer;
-          transition: background 0.2s ease, transform 0.15s ease;
-        }
-
-        .calendar-header button:hover {
-          background: #e6e6e6;
-          transform: scale(1.05);
-        }
-
-        .calendar-header button:active {
-          transform: scale(0.95);
-        }
-
-        /* GRID */
-        .calendar-grid {
-          display: grid;
-          grid-template-columns: repeat(7, 1fr);
-          gap: 6px;
-        }
-
-        /* NOMES DOS DIAS */
         .calendar-day-name {
           text-align: center;
           font-weight: 600;
-          padding: 8px 0;
+          padding: 6px 4px;
           color: #666;
+          font-size: 0.85rem;
         }
 
-        /* DIAS */
-        .calendar-day {
-          aspect-ratio: 1;
-          min-height: 64px;
-
-          border: 1.5px solid #e0e0e0;
-          border-radius: 10px;
-
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-
-          background: #fff;
-          cursor: pointer;
-
-          transition: all 0.25s ease;
-        }
-
-        .calendar-day.empty {
-          border: none;
+        .calendar-day. empty {
           background: transparent;
+          border: none;
           cursor: default;
         }
 
-        .calendar-day.available:hover {
+        .calendar-day. available: hover {
           background: #e8f5e9;
-          transform: scale(1.05);
+          transform: scale(1.02);
         }
 
         .calendar-day.reserved {
@@ -2066,11 +2177,10 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
         .calendar-day.selected {
           background: #27ae60;
           color: #fff;
-          box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.3);
         }
 
-        .calendar-day.today {
-          box-shadow: inset 0 0 0 2px #e74c3c;
+        . calendar-day.today {
+          box-shadow: inset 0 0 0 2px #27ae60;
         }
 
         .calendar-day.past {
@@ -2079,34 +2189,52 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
         }
 
         .day-number {
-          font-size: 0.85rem;
-          font-weight: 700;
+          font-size: clamp(12px, 2. 5vw, 14px);
+          font-weight:  700;
+          color: #333;
+          line-height: 1;
         }
 
         .day-price {
-          font-size: 0.7rem;
+          font-size: 11px;
+          margin-top: 2px;
+          color: #666;
         }
 
-        /* RESPONSIVO */
-        @media (max-width: 768px) {
-          .calendar-modal {
-            max-width: 95%;
-          }
-
-          .calendar-day {
-            min-height: 56px;
-          }
-
-          .day-number {
-            font-size: 0.8rem;
-          }
-
-          .day-price {
-            font-size: 0.65rem;
-          }
+        .calendar-body {
+          flex: 1;
+          overflow:  hidden;
+          padding: 8px;
         }
 
-        /* Beds Modal */
+        .calendar-grid {
+          display: grid;
+          grid-template-columns: repeat(7, 1fr);
+          grid-template-rows: repeat(6, 1fr);
+          gap: 6px;
+          height: 100%;
+        }
+
+        .calendar-day {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          border: 1.5px solid #e0e0e0;
+          border-radius: 10px;
+          background: #fff;
+          box-sizing: border-box;
+          overflow: hidden;
+          cursor: pointer;
+          min-height: 44px;
+        }
+
+        .calendar-icon {
+          width: 24px;
+          height: 24px;
+        }
+
+        /* BEDS MODAL */
         .beds-modal {
           max-width: 900px;
         }
@@ -2114,20 +2242,22 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
         .beds-container {
           display: grid;
           gap: 30px;
-          margin: 2rem 0;
+          margin:  2rem 0;
         }
 
-        .beds-section h4 {
+        . beds-section h4 {
           margin-bottom: 1rem;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .beds-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-          gap: 15px;
+          grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+          gap: 10px;
         }
 
-        .bed-item {
+        . bed-item {
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -2135,12 +2265,14 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           background: none;
           border: none;
           cursor: pointer;
-          padding: 10px;
+          padding: 8px;
           border-radius: 8px;
           transition: transform 0.3s;
+          min-height: 44px;
+          min-width: 44px;
         }
 
-        .bed-item:hover:not(:disabled) {
+        .bed-item:hover: not(:disabled) {
           transform: scale(1.05);
         }
 
@@ -2149,18 +2281,9 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           opacity: 0.6;
         }
 
-        .bed-item.selected svg rect {
-          fill: #27ae60;
-        }
-
-        .bed-item.reserved svg rect {
-          fill: #e74c3c;
-        }
-
         .bed-icon {
-          width: 24px;
-          height: 24px;
-          margin-bottom: 5px;
+          width: 20px;
+          height: 20px;
           object-fit: contain;
         }
 
@@ -2168,40 +2291,35 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           display: flex;
           gap: 20px;
           justify-content: center;
-          margin: 2rem 0;
+          margin:  2rem 0;
+          flex-wrap: wrap;
         }
 
         .legend-box {
           width: 20px;
           height: 20px;
-          border-radius: 4px;
+          border-radius:  4px;
           display: inline-block;
           margin-right: 5px;
         }
 
-        .legend-box.available {
+        .legend-box. available {
           background: #add8e6;
         }
 
-        .legend-box.selected {
+        .legend-box. selected {
           background: #27ae60;
         }
 
-        .legend-box.reserved {
+        . legend-box.reserved {
           background: #e74c3c;
         }
 
-        .modal-actions {
-          display: flex;
-          gap: 15px;
-          justify-content: flex-end;
+        /* SUITES MODAL */
+        .suites-modal {
+          max-width: 900px;
         }
 
-      /* Suites Modal */
-        .suites-modal {
-         max-width: 900px;
-
-       }
         .suites-grid {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -2221,9 +2339,11 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           flex-direction: column;
           align-items: center;
           gap: 10px;
+          min-height: 44px;
+          min-width: 44px;
         }
 
-        .suite-item:hover:not(:disabled) {
+        .suite-item:hover: not(:disabled) {
           transform: scale(1.05);
         }
 
@@ -2234,7 +2354,7 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
 
         .suite-item.selected {
           background: #27ae60;
-          color: white;
+          color:  white;
           border-color: #27ae60;
         }
 
@@ -2247,24 +2367,36 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
         .suite-icon {
           width: 48px;
           height: 48px;
-          object-fit: contain;
+          object-fit:  contain;
         }
 
-        .suite-label {
-          font-size: 1.5rem;
-          font-weight: bold;
+        . suite-label {
+          font-size: clamp(1. 3rem, 3vw, 1.5rem);
+          font-weight:  bold;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .suite-price {
-          font-size: 0.9rem;
+          font-size: clamp(0.85rem, 2vw, 0.9rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
-        /* Lightbox */
+        .modal-actions {
+          display: flex;
+          gap: 15px;
+          justify-content:  flex-end;
+          padding: 20px;
+          flex-wrap: wrap;
+        }
+
+        /* LIGHTBOX */
         .lightbox {
           position: fixed;
           top: 0;
           left: 0;
-          width: 100vw;
+          width:  100vw;
           height: 100vh;
           background: rgba(0,0,0,0.95);
           display: flex;
@@ -2294,13 +2426,15 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           align-items: center;
           justify-content: center;
           transition: background 0.3s;
+          min-height: 44px;
+          min-width:  44px;
         }
 
         .lightbox-close:hover {
           background: rgba(255,255,255,0.3);
         }
 
-        .lightbox .carousel-btn {
+        . lightbox . carousel-btn {
           background: rgba(255,255,255,0.2);
         }
 
@@ -2308,15 +2442,27 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           background: rgba(255,255,255,0.3);
         }
 
-        /* Footer */
+        /* FOOTER */
         footer {
           background: #333;
           color: white;
-          padding: 40px 20px;
+          padding: clamp(30px, 5vw, 40px) clamp(16px, 5vw, 20px);
           text-align: center;
         }
 
-        /* Alert Banner */
+        footer h3 {
+          font-size: clamp(1.2rem, 4vw, 1.3rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
+        }
+
+        footer p {
+          font-size:  clamp(0.9rem, 2vw, 0.95rem);
+          word-wrap: break-word;
+          overflow-wrap: break-word;
+        }
+
+        /* ALERT BANNER */
         .alert-banner {
           background: #fff3cd;
           border: 1px solid #ffc107;
@@ -2326,58 +2472,340 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           position: sticky;
           top: 0;
           z-index: 100;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
-        /* Responsive */
+        /* ========== RESPONSIVIDADE MOBILE ========== */
         @media (max-width: 768px) {
+          
+          .calendar-modal {
+            height: 100vh;
+            height: 100dvh;
+          }
+
+          .calendar-body {
+            height: calc(100vh - 120px);
+            height: calc(100dvh - 120px);
+          }
+          
+          .hero {
+            height: 100vh;
+            height: 100dvh;
+          }
+
           .hero h1 {
-            font-size: 2.5rem;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            padding:  0 20px;
+            line-height: 1.2;
           }
 
           .hero p {
-            font-size: 1rem;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            padding: 0 20px;
           }
 
           .hero-buttons {
             flex-direction: column;
             width: 100%;
             max-width: 300px;
+            padding: 0 20px;
           }
 
-          .benefits-grid {
+          .btn-primary, .btn-secondary {
+            width: 100%;
+            padding:  14px 24px;
+            font-size:  0.95rem;
+            min-height: 44px;
+          }
+
+          .carousel-btn {
+            width: 36px;
+            height: 36px;
+            min-height: 36px;
+            min-width: 36px;
+          }
+
+          .carousel-prev {
+            left: 10px;
+          }
+
+          . carousel-next {
+            right:  10px;
+          }
+
+          .carousel-indicators {
+            bottom: 20px;
+          }
+
+          .rooms-section {
+            padding: 40px 16px;
+          }
+
+          . rooms-section h2 {
+            font-size: clamp(1.5rem, 4vw, 1.8rem);
+            padding: 0 10px;
+          }
+
+          . rooms-section > p {
+            font-size: clamp(0.95rem, 2vw, 1rem);
+            padding: 0 10px;
+            margin-bottom: 2rem;
+          }
+
+          . room-carousel {
+            height: 300px;
+          }
+
+          . room-carousel .carousel-btn {
+            width: 36px;
+            height: 36px;
+            min-height:  36px;
+            min-width: 36px;
+          }
+
+          .room-info {
+            padding: 20px;
+          }
+
+          .benefits-section {
+            padding: 40px 16px;
+          }
+
+          .benefits-section h2 {
+            font-size: clamp(1.5rem, 4vw, 1.8rem);
+            margin-bottom: 2rem;
+          }
+
+          . benefits-grid {
             grid-template-columns: 1fr;
+            gap: 20px;
+          }
+
+          . benefit-card {
+            padding: 24px;
+          }
+
+          .benefit-icon {
+            font-size: clamp(2rem, 4vw, 2.5rem);
+          }
+
+          .testimonials-section {
+            padding:  40px 16px;
+          }
+
+          .testimonials-section h2 {
+            font-size: clamp(1.5rem, 4vw, 1.8rem);
+            margin-bottom: 2rem;
           }
 
           .testimonials-grid {
             grid-template-columns: 1fr;
+            gap: 20px;
+          }
+
+          .testimonial-card {
+            padding: 24px;
+          }
+
+          .reservation-section {
+            padding: 40px 16px;
+            min-height: auto;
           }
 
           .reservation-cards {
             flex-direction: column;
+            gap: 24px;
+            width: 100%;
           }
 
           .reservation-card {
             max-width: 100%;
+            width: 100%;
+            padding: 24px 20px;
+          }
+
+          .reservation-card h3 {
+            font-size: clamp(1.3rem, 4vw, 1.5rem);
+          }
+
+          .form-group input,
+          .form-group select {
+            font-size: 16px;
+            padding: 14px;
+          }
+
+          .btn-reserve {
+            padding: 16px;
+            font-size: 1rem;
+          }
+
+          .price-summary {
+            padding: 16px;
+          }
+
+          .beds-modal {
+            width: 100%;
+            max-width: 100%;
+            margin: 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+          }
+
+          .beds-grid {
+            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+            gap: 8px;
+          }
+
+          . bed-item {
+            padding: 6px;
+            min-height: 40px;
+            min-width: 40px;
+          }
+
+          . suites-modal {
+            width:  100%;
+            max-width: 100%;
+            margin:  20px;
+            max-height: 90vh;
+            overflow-y: auto;
+          }
+
+          .suites-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+          }
+
+          . suite-item {
+            padding:  16px;
+            min-height:  40px;
+            min-width: 40px;
+          }
+
+          .lightbox img {
+            max-width: 95%;
+            max-height: 85%;
+          }
+
+          .lightbox-close {
+            top: 10px;
+            right: 10px;
+            width: 44px;
+            height: 44px;
+          }
+
+          .lightbox . carousel-btn {
+            width:  44px;
+            height: 44px;
+          }
+
+          footer {
+            padding: 30px 20px;
+            font-size: 0.95rem;
+          }
+
+          footer h3 {
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
+          }
+
+          . modal-content {
+            width: 95%;
+            max-width: 95%;
+            margin: 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+          }
+
+          .modal-close {
+            top: 10px;
+            right: 10px;
+            min-height: 40px;
+            min-width:  40px;
+          }
+
+          body {
+            font-size: 16px;
+            -webkit-text-size-adjust:  100%;
+          }
+
+          h1, h2, h3, h4, h5, h6 {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+          }
+
+          button, a, . btn-primary, .btn-secondary, . btn-text {
+            min-height: 44px;
+            min-width: 44px;
+          }
+        }
+
+        @media (max-width: 768px) and (orientation: landscape) {
+          .hero {
+            height: 100vh;
+          }
+
+          .hero h1 {
+            font-size: clamp(1.4rem, 3vw, 1.8rem);
+          }
+
+          . hero p {
+            font-size: clamp(0.85rem, 1.5vw, 0.9rem);
+          }
+
+          .hero-buttons {
+            flex-direction: row;
+            max-width: 100%;
+            gap: 10px;
+          }
+
+          . btn-primary, .btn-secondary {
+            padding: 12px 20px;
+            font-size:  0.9rem;
+          }
+        }
+
+        @media (max-width: 375px) {
+          .hero h1 {
+            font-size: 1.4rem;
+          }
+
+          . rooms-section h2,
+          .benefits-section h2,
+          .testimonials-section h2 {
+            font-size: 1.3rem;
+          }
+
+          . room-header {
+            font-size: 1.1rem;
+            padding: 14px;
+          }
+
+          .reservation-card {
+            padding: 18px 14px;
+          }
+
+          . reservation-card h3 {
+            font-size: 1.2rem;
           }
         }
       `}</style>
 
       {error && (
-        <div className="alert-banner">
-          ⚠️ {error} O sistema está usando valores padrão.
+        <div className="alert-banner" translate="no">
+          ⚠️ {error} O sistema está usando valores padrão. 
         </div>
       )}
 
       <Hero />
 
-      <section className="rooms-section" id="rooms-section">
+      <section className="rooms-section" id="rooms-section" translate="no">
         <h2>Nossos quartos</h2>
-        <p>Escolha o Hostel perfeito para sua experiência inesquecível!</p>
+        <p>Escolha o Hostel perfeito para sua experiência inesquecível! </p>
         <div className="rooms-grid">
           {roomsData.map((room, idx) => (
             <RoomCard
               key={idx}
-              {...room}
+              {... room}
               onShowMore={() => setShowModal(room.name)}
             />
           ))}
@@ -2387,7 +2815,7 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
       <BenefitsSection />
       <TestimonialsSection />
 
-      <section className="reservation-section" id="reservation-section">
+      <section className="reservation-section" id="reservation-section" translate="no">
         <div className="reservation-cards">
           <ReservationCard title="Nice Place" roomId="jb" sheetsData={sheetsData} />
           <ReservationCard title="Quarto Feminino FreiSa" roomId="ar" sheetsData={sheetsData} />
@@ -2396,7 +2824,7 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
         </div>
       </section>
 
-      <footer>
+      <footer translate="no">
         <h3>FreiSa Hostel</h3>
         <p>Copacabana, Rio de Janeiro - Brasil</p>
         <p>WhatsApp: +55 21 99730-5179</p>
@@ -2404,11 +2832,11 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
       </footer>
 
       {showModal && (
-        <div className="modal-overlay" onClick={() => setShowModal(null)}>
+        <div className="modal-overlay" onClick={() => setShowModal(null)} translate="no">
           <div className="modal-content calendar-modal" onClick={e => e.stopPropagation()}>
             <button className="modal-close" onClick={() => setShowModal(null)}><X /></button>
-            <h2 style={{marginBottom: '1rem'}}>{showModal}</h2>
-            <div style={{lineHeight: 1.8, color: '#666', whiteSpace: 'pre-line'}}>
+            <h2 style={{marginBottom: '1rem', padding: '0 20px'}}>{showModal}</h2>
+            <div style={{lineHeight: 1.8, color: '#666', whiteSpace: 'pre-line', padding: '0 20px', overflowY: 'auto'}}>
               {roomsData.find(r => r.name === showModal)?.fullDescription || ''}
             </div>
           </div>
