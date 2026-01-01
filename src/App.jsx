@@ -1202,10 +1202,27 @@ export default function App() {
       // explicit content language
       ensureMeta('http-equiv', 'Content-Language', 'pt-BR');
       // hint for other tools
+      // hint for other tools
       ensureMeta('name', 'locale', 'pt-BR');
+      
+      // ===== COLE AQUI AS LINHAS NOVAS =====
+      // VIEWPORT E RESPONSIVIDADE - CRITICAL
+      ensureMeta('name', 'viewport', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover');
+      
+      // Otimizações Mobile
+      ensureMeta('name', 'apple-mobile-web-app-capable', 'yes');
+      ensureMeta('name', 'apple-mobile-web-app-status-bar-style', 'black-translucent');
+      ensureMeta('name', 'format-detection', 'telephone=no');
+      ensureMeta('name', 'mobile-web-app-capable', 'yes');
+      
+      // Prevenir zoom indesejado no iOS
+      document.addEventListener('gesturestart', function (e) {
+        e.preventDefault();
+      });
+      // ===== FIM DAS LINHAS NOVAS =====
+      
     } catch (e) {
       // ignore in non-browser environments
-    }
   }, []);
 
   const roomsData = [
@@ -1357,8 +1374,17 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           box-sizing: border-box;
         }
 
+        html {
+          height: 100%;
+          -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+          -webkit-touch-callout: none;
+        }
+
         html, body {
           height: 100%;
+          overflow-x: hidden;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
         }
 
         body {
@@ -1366,10 +1392,34 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           line-height: 1.6;
           color: #333;
           -webkit-text-size-adjust: 100%;
+          position: relative;
+          min-height: 100vh;
         }
 
         .app {
           overflow-x: hidden;
+          width: 100%;
+          position: relative;
+        }
+
+        /* Prevenir zoom indesejado em inputs no iOS */
+        input, select, textarea, button {
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+        }
+
+        /* Suavizar scrolling */
+        * {
+          scroll-behavior: smooth;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        /* Garantir que imagens sejam responsivas */
+        img {
+          max-width: 100%;
+          height: auto;
+          display: block;
         }
 
         .spinner {
@@ -2293,36 +2343,366 @@ Um espaço prático e acolhedor, perfeito para quem busca conforto, funcionalida
           z-index: 100;
         }
 
-        /* Responsive */
+        /* ========== RESPONSIVIDADE MOBILE ========== */
         @media (max-width: 768px) {
+          /* Hero Section - Mobile */
+          .hero {
+            height: 100vh;
+            height: 100dvh; /* Dynamic viewport height */
+          }
+
           .hero h1 {
-            font-size: 2.5rem;
+            font-size: 2rem;
+            padding: 0 20px;
+            line-height: 1.2;
           }
 
           .hero p {
             font-size: 1rem;
+            padding: 0 20px;
           }
 
           .hero-buttons {
             flex-direction: column;
             width: 100%;
             max-width: 300px;
+            padding: 0 20px;
+          }
+
+          .btn-primary, .btn-secondary {
+            width: 100%;
+            padding: 14px 24px;
+            font-size: 0.95rem;
+          }
+
+          .carousel-btn {
+            width: 40px;
+            height: 40px;
+          }
+
+          .carousel-prev {
+            left: 10px;
+          }
+
+          .carousel-next {
+            right: 10px;
+          }
+
+          .carousel-indicators {
+            bottom: 20px;
+          }
+
+          /* Rooms Section - Mobile */
+          .rooms-section {
+            padding: 40px 16px;
+          }
+
+          .rooms-section h2 {
+            font-size: 1.8rem;
+            padding: 0 10px;
+          }
+
+          .rooms-section > p {
+            font-size: 1rem;
+            padding: 0 10px;
+            margin-bottom: 2rem;
+          }
+
+          .rooms-grid {
+            gap: 30px;
+          }
+
+          .room-card {
+            margin: 0 auto;
+            max-width: 100%;
+          }
+
+          .room-header {
+            padding: 20px;
+            font-size: 1.3rem;
+          }
+
+          .room-carousel {
+            height: 300px;
+          }
+
+          .room-carousel .carousel-btn {
+            width: 36px;
+            height: 36px;
+          }
+
+          .room-info {
+            padding: 20px;
+          }
+
+          .highlight {
+            flex-direction: row;
+            align-items: flex-start;
+          }
+
+          .highlight-icon {
+            font-size: 1.3rem;
+          }
+
+          /* Benefits Section - Mobile */
+          .benefits-section {
+            padding: 40px 16px;
+          }
+
+          .benefits-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
           }
 
           .benefits-grid {
             grid-template-columns: 1fr;
+            gap: 20px;
+          }
+
+          .benefit-card {
+            padding: 24px;
+          }
+
+          .benefit-icon {
+            font-size: 2.5rem;
+          }
+
+          .benefit-card h3 {
+            font-size: 1.1rem;
+          }
+
+          /* Testimonials Section - Mobile */
+          .testimonials-section {
+            padding: 40px 16px;
+          }
+
+          .testimonials-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
           }
 
           .testimonials-grid {
             grid-template-columns: 1fr;
+            gap: 20px;
+          }
+
+          .testimonial-card {
+            padding: 24px;
+          }
+
+          .testimonial-text {
+            font-size: 0.95rem;
+          }
+
+          /* Reservation Section - Mobile */
+          .reservation-section {
+            padding: 40px 16px;
+            min-height: auto;
           }
 
           .reservation-cards {
             flex-direction: column;
+            gap: 24px;
+            width: 100%;
           }
 
           .reservation-card {
             max-width: 100%;
+            width: 100%;
+            padding: 24px 20px;
+          }
+
+          .reservation-card h3 {
+            font-size: 1.5rem;
+          }
+
+          .form-group input,
+          .form-group select {
+            font-size: 16px; /* Evita zoom no iOS */
+            padding: 14px;
+          }
+
+          .btn-reserve {
+            padding: 16px;
+            font-size: 1rem;
+          }
+
+          .price-summary {
+            padding: 16px;
+          }
+
+          .price-line {
+            font-size: 0.95rem;
+          }
+
+          .price-line.total {
+            font-size: 1.2rem;
+          }
+
+          /* Beds Modal - Mobile */
+          .beds-modal {
+            width: 100%;
+            max-width: 100%;
+            margin: 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+          }
+
+          .beds-grid {
+            grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+            gap: 10px;
+          }
+
+          .bed-item {
+            padding: 8px;
+          }
+
+          .bed-icon {
+            width: 20px;
+            height: 20px;
+          }
+
+          .modal-actions {
+            flex-direction: column;
+            gap: 10px;
+          }
+
+          .modal-actions button {
+            width: 100%;
+          }
+
+          /* Suites Modal - Mobile */
+          .suites-modal {
+            width: 100%;
+            max-width: 100%;
+            margin: 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+          }
+
+          .suites-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+          }
+
+          .suite-item {
+            padding: 16px;
+          }
+
+          /* Lightbox - Mobile */
+          .lightbox img {
+            max-width: 95%;
+            max-height: 85%;
+          }
+
+          .lightbox-close {
+            top: 10px;
+            right: 10px;
+            width: 44px;
+            height: 44px;
+          }
+
+          .lightbox .carousel-btn {
+            width: 44px;
+            height: 44px;
+          }
+
+          /* Footer - Mobile */
+          footer {
+            padding: 30px 20px;
+            font-size: 0.95rem;
+          }
+
+          footer h3 {
+            font-size: 1.3rem;
+          }
+
+          /* Modal Geral - Mobile */
+          .modal-content {
+            width: 95%;
+            max-width: 95%;
+            margin: 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+          }
+
+          .modal-close {
+            top: 10px;
+            right: 10px;
+          }
+
+          /* Ajustes gerais de texto */
+          body {
+            font-size: 16px;
+            -webkit-text-size-adjust: 100%;
+          }
+
+          h1, h2, h3, h4, h5, h6 {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+          }
+
+          /* Evitar zoom indesejado em inputs no iOS */
+          input, select, textarea {
+            font-size: 16px !important;
+          }
+
+          /* Melhorar toque em botões */
+          button, a, .btn-primary, .btn-secondary, .btn-text {
+            min-height: 44px;
+            min-width: 44px;
+          }
+        }
+
+        /* Landscape Mobile (paisagem) */
+        @media (max-width: 768px) and (orientation: landscape) {
+          .hero {
+            height: 100vh;
+          }
+
+          .hero h1 {
+            font-size: 1.8rem;
+          }
+
+          .hero p {
+            font-size: 0.9rem;
+          }
+
+          .hero-buttons {
+            flex-direction: row;
+            max-width: 100%;
+            gap: 10px;
+          }
+
+          .btn-primary, .btn-secondary {
+            padding: 12px 20px;
+            font-size: 0.9rem;
+          }
+        }
+
+        /* Extra small devices (menos de 375px) */
+        @media (max-width: 375px) {
+          .hero h1 {
+            font-size: 1.6rem;
+          }
+
+          .rooms-section h2,
+          .benefits-section h2,
+          .testimonials-section h2 {
+            font-size: 1.5rem;
+          }
+
+          .room-header {
+            font-size: 1.2rem;
+            padding: 16px;
+          }
+
+          .reservation-card {
+            padding: 20px 16px;
+          }
+
+          .reservation-card h3 {
+            font-size: 1.3rem;
           }
         }
       `}</style>
